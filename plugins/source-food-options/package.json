@@ -1,0 +1,14 @@
+{
+  "name": "source-food-options",
+  "version": "1.0.0",
+  "description": "Uses the Yelp API to fetch food options split between breakfast, lunch, and dinner",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Queen <chrisqueen10@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
