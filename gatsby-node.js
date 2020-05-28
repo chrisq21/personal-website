@@ -30,6 +30,22 @@ const fetchFood = async params => {
   }
 }
 
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
+  const typeDefs = `
+    type FoodOption implements Node @dontInfer {
+      name: String
+      id: ID
+      rating: String
+      price: String
+      image_url: String
+      url: String
+    }
+  `
+
+  createTypes(typeDefs)
+}
+
 exports.sourceNodes = async ({
   actions,
   createNodeId,
@@ -45,14 +61,17 @@ exports.sourceNodes = async ({
   }
 
   const food = await fetchFood(params)
-
-  const nodeMeta = {
-    id: createNodeId(`food-${food.id}`),
-    internal: {
-      type: "food",
-      contentDigest: createContentDigest(food),
-    },
+  if (food.businesses.length > 0) {
+    food.businesses.forEach(foodOption => {
+      const nodeMeta = {
+        id: createNodeId(`food-option-${foodOption.id}`),
+        internal: {
+          type: "FoodOption",
+          contentDigest: createContentDigest(foodOption),
+        },
+      }
+      const node = { ...foodOption, ...nodeMeta }
+      createNode(node)
+    })
   }
-  const node = { ...food, ...nodeMeta }
-  createNode(node)
 }
