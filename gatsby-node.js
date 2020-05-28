@@ -8,10 +8,9 @@ const yelpEndpoint = "https://api.yelp.com/v3/businesses/search"
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-// You can delete this file if you're not using it
-
 const fetchFood = async params => {
   const url = new URL(yelpEndpoint)
+
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value)
   )
@@ -38,16 +37,16 @@ const addGatsbyNode = async (
   foodOptions
 ) => {
   if (foodOptions.businesses.length > 0) {
-    foodOptions.businesses.forEach(option => {
+    foodOptions.businesses.forEach(foodOption => {
       const nodeMeta = {
-        id: createNodeId(`food-option-${option.id}`),
+        id: createNodeId(`food-option-${foodOption.id}`),
         foodType,
         internal: {
           type: "FoodOption",
-          contentDigest: createContentDigest(option),
+          contentDigest: createContentDigest(foodOption),
         },
       }
-      const node = { ...option, ...nodeMeta }
+      const node = { ...foodOption, ...nodeMeta }
       createNode(node)
     })
   } else {
@@ -62,7 +61,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       name: String
       id: ID
       rating: String
-      price: String
+      price: String!
       image_url: String
       url: String
       foodType: String
@@ -75,7 +74,6 @@ exports.createSchemaCustomization = ({ actions }) => {
 // Breakfast (7AM EST, Thursday, May 28, 2020) ====> 1590663600
 // Lunch (12PM EST, Thursday, May 28, 2020) ====> 1590681600
 // Dinner (5PM EST, Thursday, May 28, 2020) ====> 1590699600
-// "type" could be retrieved from key, but setting the value explicitly adds flexibility in the future
 
 const foodTypeData = (() => {
   const breakfastTime = "1590663600"
@@ -117,47 +115,18 @@ exports.sourceNodes = async ({
     limit: 20,
   }
 
-  // TODO Add breakfast, lunch, dinner options using "open_at" param
-  const { breakfast, lunch, dinner } = foodTypeData
-
-  // Replace all of the operations below with a loop through the foodTypeData object
-
-  // Fetch Breakfast Options
-  const breakfastOptions = await fetchFood({
-    ...baseParams,
-    ...breakfast.params,
+  // Fetch food options by type, then create Gatsby nodes
+  Object.entries(foodTypeData).forEach(async ([key, value]) => {
+    const foodOptions = await fetchFood({
+      ...baseParams,
+      ...value.params,
+    })
+    addGatsbyNode(
+      createNode,
+      createNodeId,
+      createContentDigest,
+      key,
+      foodOptions
+    )
   })
-  addGatsbyNode(
-    createNode,
-    createNodeId,
-    createContentDigest,
-    "breakfast",
-    breakfastOptions
-  )
-
-  // Fetch Lunch Options
-  const lunchOptions = await fetchFood({
-    ...baseParams,
-    ...lunch.params,
-  })
-  addGatsbyNode(
-    createNode,
-    createNodeId,
-    createContentDigest,
-    "lunch",
-    lunchOptions
-  )
-
-  // Fetch Dinner Options
-  const dinnerOptions = await fetchFood({
-    ...baseParams,
-    ...dinner.params,
-  })
-  addGatsbyNode(
-    createNode,
-    createNodeId,
-    createContentDigest,
-    "dinner",
-    dinnerOptions
-  )
 }
