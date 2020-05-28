@@ -106,13 +106,13 @@ exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
   const typeDefs = `
     type FoodOption implements Node @dontInfer {
-      name: String
-      id: ID
+      name: String!
+      id: ID!
       rating: String
-      price: String!
+      price: String
       image_url: String
-      url: String
-      foodType: String
+      url: String!
+      foodType: String!
     }
   `
 
