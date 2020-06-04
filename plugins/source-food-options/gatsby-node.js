@@ -3,39 +3,17 @@ const { YELP_API_KEY } = require("../../secrets")
 
 const yelpEndpoint = "https://api.yelp.com/v3/businesses/search"
 
-/**
- * Food Type Params
- * The `open_at` field here can't be trusted very much unfortunately.
- * Each `open_at` value represents a certain time on Thursday, May 28, 2020,
- * so if a business changes their times or if the weekend times are different, that won't be reflected in the data
- *
- * Unix times:
- * Breakfast (7AM EST, Thursday, May 28, 2020) ====> 1590663600
- * Lunch (12PM EST, Thursday, May 28, 2020) ====> 1590681600
- * Dinner (5PM EST, Thursday, May 28, 2020) ====> 1590699600
- */
-const foodTypeParams = (() => {
-  const foodTimes = {
-    BREAKFAST: "1590663600",
-    LUNCH: "1590681600",
-    DINNER: "1590699600",
-  }
-
-  return {
-    breakfast: {
-      term: "breakfast",
-      open_at: foodTimes.BREAKFAST,
-    },
-    lunch: {
-      term: "lunch",
-      open_at: foodTimes.LUNCH,
-    },
-    dinner: {
-      term: "dinner",
-      open_at: foodTimes.DINNER,
-    },
-  }
-})()
+const foodTypeParams = {
+  breakfast: {
+    term: "breakfast",
+  },
+  lunch: {
+    term: "lunch",
+  },
+  dinner: {
+    term: "dinner",
+  },
+}
 
 /**
  *
@@ -136,12 +114,15 @@ exports.sourceNodes = async ({
       ...baseParams,
       ...value,
     })
-    addGatsbyNode(
-      createNode,
-      createNodeId,
-      createContentDigest,
-      key,
-      foodOptions
-    )
+
+    if (foodOptions.length > 0) {
+      addGatsbyNode(
+        createNode,
+        createNodeId,
+        createContentDigest,
+        key,
+        foodOptions
+      )
+    }
   })
 }
