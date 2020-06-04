@@ -27,6 +27,7 @@ const FoodRoulettePage = ({ data }) => {
 
   const handleChange = e => setFoodType(e.target.value)
 
+  // TODO Move markup to components in the components folder
   return (
     <Layout>
       <SEO title="Food Roulette" />
