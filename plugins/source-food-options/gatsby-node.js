@@ -1,5 +1,4 @@
 const fetch = require("node-fetch")
-const { YELP_API_KEY } = require("../../secrets")
 
 const yelpEndpoint = "https://api.yelp.com/v3/businesses/search"
 
@@ -29,7 +28,7 @@ const fetchFood = async params => {
   try {
     const res = await fetch(url.href, {
       headers: {
-        Authorization: `Bearer ${YELP_API_KEY}`,
+        Authorization: `Bearer ${process.env.YELP_API_KEY}`,
       },
     })
     if (res.statusText !== "OK")
