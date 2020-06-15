@@ -103,7 +103,7 @@ exports.sourceNodes = async ({
 }) => {
   const { createNode } = actions
   const baseParams = {
-    location: "30318", // My zip. Please don't use it to stalk me.
+    location: "30309", // My zip. Please don't use it to stalk me.
     limit: 20,
   }
 
@@ -114,7 +114,7 @@ exports.sourceNodes = async ({
       ...value,
     })
 
-    if (foodOptions.length > 0) {
+    if (foodOptions && foodOptions.length > 0) {
       addGatsbyNode(
         createNode,
         createNodeId,
