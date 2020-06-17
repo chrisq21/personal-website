@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useLayoutEffect, useState } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { graphql } from "gatsby"
+import { setupCanvas } from "../lib/animation/food"
 
 const FoodRoulettePage = ({ data }) => {
   const [selectedFoodOption, setSelectedFoodOption] = useState("")
@@ -27,6 +28,10 @@ const FoodRoulettePage = ({ data }) => {
 
   const handleChange = e => setFoodType(e.target.value)
 
+  useLayoutEffect(() => {
+    setupCanvas()
+  }, [])
+
   // TODO Move markup to components in the components folder
   return (
     <Layout>
@@ -49,6 +54,7 @@ const FoodRoulettePage = ({ data }) => {
         </>
       )}
       <button onClick={spin}>SPIN</button>
+      <canvas id="#food-canvas"></canvas>
     </Layout>
   )
 }
