@@ -1,22 +1,31 @@
 import { lerp } from "canvas-sketch-util/math"
 import random from "canvas-sketch-util/random"
 
-export const setupCanvas = foodOptions => {
-  if (document) {
-    const canvas = document.getElementById("#food-canvas")
-    // TODO update canvas width after resize
-    canvas.width = 1000
-    canvas.height = 1000
-    const context = canvas.getContext("2d")
-    const options = getGridOptions(foodOptions, canvas.width, canvas.height)
-    context.fillStyle = "red"
-    options.forEach(([x, y]) => {
-      context.fillRect(x, y, 10, 10)
-    })
-  }
+/* Variables */
+
+/* Grid */
+const gridOrbRadius = 50
+const palette = [
+  "rgb(185,211,176)",
+  "rgb(129,189,164)",
+  "rgb(178,135,116)",
+  "rgb(248,143,121)",
+  "rgb(246,170,147)",
+]
+
+const drawGrid = (gridData, context) => {
+  gridData.forEach((data, index) => {
+    const color = palette[index % palette.length]
+    context.fillStyle = color
+
+    const [x, y] = data.point
+    context.beginPath()
+    context.arc(x, y, gridOrbRadius, 0, Math.PI * 2)
+    context.fill()
+  })
 }
 
-const getGridOptions = (foodOptions, width, height) => {
+const getGridData = (foodOptions, width, height) => {
   const options = []
   const margin = 100
   const shuffledFoodOptions = random.shuffle(foodOptions)
@@ -41,5 +50,17 @@ const getGridOptions = (foodOptions, width, height) => {
     }
   }
 
-  return points
+  return options
+}
+
+export const setupCanvas = foodOptions => {
+  if (document) {
+    const canvas = document.getElementById("#food-canvas")
+    // TODO update canvas width after resize
+    canvas.width = 1000
+    canvas.height = 1000
+    const context = canvas.getContext("2d")
+    const gridData = getGridData(foodOptions, canvas.width, canvas.height)
+    drawGrid(gridData, context)
+  }
 }
