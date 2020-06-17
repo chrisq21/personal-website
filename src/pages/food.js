@@ -38,8 +38,8 @@ const FoodRoulettePage = ({ data }) => {
   return (
     <Layout>
       <SEO title="Food Roulette" />
-      {/* <h1>Food</h1> 
-       <p>Spin the wheel. Eat food.</p>
+      <h1>Food</h1>
+      <p>Spin the wheel. Eat food.</p>
       <select value={foodType} onChange={handleChange}>
         <option value="dinner">Dinner</option>
         <option value="lunch">Lunch</option>
@@ -56,7 +56,7 @@ const FoodRoulettePage = ({ data }) => {
         </>
       )}
       <button onClick={spin}>SPIN</button>
-    */}
+
       <div>
         <canvas
           id="#food-canvas"

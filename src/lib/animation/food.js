@@ -13,6 +13,13 @@ const palette = [
   "rgb(246,170,147)",
 ]
 
+const drawCursor = (gridData, context, time) => {
+  context.beginPath()
+  context.fillStyle = "rgb(185,211,176)"
+  context.arc(50, 50, 10, 0, Math.PI * 2)
+  context.fill()
+}
+
 const drawGrid = (gridData, context) => {
   gridData.forEach((data, index) => {
     const color = palette[index % palette.length]
@@ -62,5 +69,6 @@ export const setupCanvas = foodOptions => {
     const context = canvas.getContext("2d")
     const gridData = getGridData(foodOptions, canvas.width, canvas.height)
     drawGrid(gridData, context)
+    drawCursor(gridData, context) // TODO add time variable
   }
 }
