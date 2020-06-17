@@ -29,15 +29,17 @@ const FoodRoulettePage = ({ data }) => {
   const handleChange = e => setFoodType(e.target.value)
 
   useLayoutEffect(() => {
-    setupCanvas()
+    setupCanvas(data["dinner"].edges)
+    // setupCanvas(data["breakfast"].edges)
+    // setupCanvas(data["lunch"].edges)
   }, [])
 
   // TODO Move markup to components in the components folder
   return (
     <Layout>
       <SEO title="Food Roulette" />
-      <h1>Food Roulette</h1>
-      <p>Spin the wheel. Eat food.</p>
+      {/* <h1>Food</h1> 
+       <p>Spin the wheel. Eat food.</p>
       <select value={foodType} onChange={handleChange}>
         <option value="dinner">Dinner</option>
         <option value="lunch">Lunch</option>
@@ -54,7 +56,13 @@ const FoodRoulettePage = ({ data }) => {
         </>
       )}
       <button onClick={spin}>SPIN</button>
-      <canvas id="#food-canvas"></canvas>
+    */}
+      <div>
+        <canvas
+          id="#food-canvas"
+          style={{ height: "75vh", display: "block", margin: "0 auto" }}
+        ></canvas>
+      </div>
     </Layout>
   )
 }
