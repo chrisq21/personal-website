@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react"
+import React, { useLayoutEffect, useState, useEffect } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { graphql } from "gatsby"
@@ -7,6 +7,7 @@ import { setupCanvas } from "../lib/animation/food"
 const FoodRoulettePage = ({ data }) => {
   const [selectedFoodOption, setSelectedFoodOption] = useState("")
   const [foodType, setFoodType] = useState("dinner")
+  const [canvasDimensions, setCanvasDimensions] = useState(0)
 
   // TODO Move to helper file
   const getRandomInt = (min, max) => {
@@ -29,11 +30,23 @@ const FoodRoulettePage = ({ data }) => {
   const handleChange = e => setFoodType(e.target.value)
 
   useLayoutEffect(() => {
-    setupCanvas(data["dinner"].edges)
-    // setupCanvas(data["breakfast"].edges)
-    // setupCanvas(data["lunch"].edges)
+    const wrapperElement = document.getElementById("container")
+    const wrapperWidth = wrapperElement.offsetWidth
+    const wrapperHeight = wrapperElement.offsetHeight
+
+    const newCanvasDimensions =
+      wrapperWidth > wrapperHeight ? wrapperHeight : wrapperWidth
+    console.log("Dimension: ", newCanvasDimensions)
+    setCanvasDimensions(newCanvasDimensions)
   }, [])
 
+  useEffect(() => {
+    if (canvasDimensions > 0) {
+      setupCanvas(data["dinner"].edges)
+    }
+  }, [canvasDimensions])
+
+  console.log("canvasDimensions: ", canvasDimensions)
   // TODO Move markup to components in the components folder
   return (
     <Layout>
@@ -57,11 +70,19 @@ const FoodRoulettePage = ({ data }) => {
       )}
       <button onClick={spin}>SPIN</button> */}
 
-      <div>
-        <canvas
-          id="#food-canvas"
-          style={{ height: "75vh", display: "block", margin: "0 auto" }}
-        ></canvas>
+      <div id="canvas-wrapper" style={{ height: "90vh", width: "100%" }}>
+        {canvasDimensions > 0 && (
+          <canvas
+            width={canvasDimensions}
+            height={canvasDimensions}
+            id="#food-canvas"
+            style={{
+              display: "block",
+              margin: "0 auto",
+              border: "1px solid red",
+            }}
+          ></canvas>
+        )}
       </div>
     </Layout>
   )

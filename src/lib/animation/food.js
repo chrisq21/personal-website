@@ -5,14 +5,14 @@ import BezierEasing from "bezier-easing"
 /* Variables */
 
 /* Canvas */
-let canvasHeight
-let canvasWidth
+let canvas
 let context
 
 /* Grid */
+let margin
 let gridData = []
-const gridSize = 4 // total size = gridSize x gridSize
-const gridOrbRadius = 50
+let gridSize
+let gridOrbRadius
 const palette = [
   "rgb(185,211,176)",
   "rgb(129,189,164)",
@@ -25,15 +25,7 @@ const palette = [
 const mainLineMvmtEaseFn = BezierEasing(0.76, 0.02, 0.73, 0.93)
 const lastLineMvmtEaseFn = BezierEasing(0.7, 0.01, 0, 0.49)
 const mainCursorEaseFn = BezierEasing(1, 0.09, 0.55, 0.91)
-const cursor = {
-  x: 0,
-  y: 0,
-  radius: 30,
-}
-let orbitCenterX
-let orbitCenterY
-let distanceFromOrbitCenter
-let rotationScalar
+let cursor
 
 /* Animation controls */
 let totalAnimationTime
@@ -46,17 +38,29 @@ let linesToTravel = 5
 let linesTraveled = 0
 
 const init = () => {
-  /* Canvas */
-  canvasHeight = 1000
-  canvasWidth = 1000
+  /* Grid */
+  gridSize = 4 // total size = gridSize x gridSize
+  margin = canvas.width / 5
+  gridOrbRadius = canvas.width / 25
 
   /* Cursor */
-  const previousPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
-  const nextPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
-  cursor.previousPointIndex = previousPointIndex
-  cursor.nextPointIndex = nextPointIndex
-  distanceFromOrbitCenter = 100
-  rotationScalar = 1
+  cursor = {
+    center: {
+      x: 0,
+      y: 0,
+    },
+    orbitCenter: {
+      x: 0,
+      y: 0,
+    },
+    radius: canvas.width / 30,
+    initialDistanceFromOrbitCenter: canvas.width / 3,
+    distanceFromOrbitCenter: canvas.width / 3,
+    initialRotationScalar: 5,
+    rotationScalar: 5,
+    startingPointIndex: Math.round((gridSize * gridSize) / 2),
+    destinationPointIndex: random.rangeFloor(0, gridSize * gridSize - 1),
+  }
 
   /* Animation controls*/
   totalAnimationTime = lineTravelSpeed * linesToTravel
@@ -64,7 +68,6 @@ const init = () => {
 
 const getGridData = (foodOptions, width, height) => {
   const options = []
-  const margin = 100
   const shuffledFoodOptions = random.shuffle(foodOptions)
   // TODO Set grid size based on desktop vs mobile
   let counter = 0
@@ -90,8 +93,8 @@ const getGridData = (foodOptions, width, height) => {
 }
 
 const updateMvmtLine = () => {
-  cursor.previousPointIndex = cursor.nextPointIndex
-  cursor.nextPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
+  cursor.startingPointIndex = cursor.destinationPointIndex
+  cursor.destinationPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
   newLineTime = currentTime
   linesTraveled++
   if (linesTraveled >= linesToTravel && !foundFood) {
@@ -101,27 +104,37 @@ const updateMvmtLine = () => {
 
 /* Cursor */
 const drawCursor = () => {
-  const rotation = Math.PI * currentTime * rotationScalar
-  cursor.x = orbitCenterX + distanceFromOrbitCenter * Math.sin(rotation)
-  cursor.y = orbitCenterY + distanceFromOrbitCenter * Math.cos(rotation)
+  const rotation = Math.PI * currentTime * cursor.rotationScalar
+  cursor.center.x =
+    cursor.orbitCenter.x + cursor.distanceFromOrbitCenter * Math.sin(rotation)
+  cursor.center.y =
+    cursor.orbitCenter.y + cursor.distanceFromOrbitCenter * Math.cos(rotation)
   context.beginPath()
   context.fillStyle = "rgb(185,211,176)"
-  context.arc(cursor.x, cursor.y, cursor.radius, 0, Math.PI * 2)
+  context.arc(cursor.center.x, cursor.center.y, cursor.radius, 0, Math.PI * 2)
   context.fill()
 }
 
 const moveCursor = () => {
   /* Move cursor across a specified line */
-  const [startX, startY] = gridData[cursor.previousPointIndex].point
-  const [endX, endY] = gridData[cursor.nextPointIndex].point
+  const [startX, startY] = gridData[cursor.startingPointIndex].point
+  const [endX, endY] = gridData[cursor.destinationPointIndex].point
   const lineMvmtEaseFn =
     linesTraveled === linesToTravel - 1
       ? lastLineMvmtEaseFn
       : mainLineMvmtEaseFn
   const lineCompletePercentage = (currentTime - newLineTime) / lineTravelSpeed
   if (lineCompletePercentage <= 1) {
-    orbitCenterX = lerp(startX, endX, lineMvmtEaseFn(lineCompletePercentage))
-    orbitCenterY = lerp(startY, endY, lineMvmtEaseFn(lineCompletePercentage))
+    cursor.orbitCenter.x = lerp(
+      startX,
+      endX,
+      lineMvmtEaseFn(lineCompletePercentage)
+    )
+    cursor.orbitCenter.y = lerp(
+      startY,
+      endY,
+      lineMvmtEaseFn(lineCompletePercentage)
+    )
   } else {
     updateMvmtLine()
   }
@@ -131,9 +144,13 @@ const moveCursor = () => {
     (totalAnimationTime + currentTime) / totalAnimationTime - 1
 
   if (animCompletePercentage <= 1) {
-    rotationScalar = lerp(5, 0, mainCursorEaseFn(animCompletePercentage))
-    distanceFromOrbitCenter = lerp(
-      300,
+    cursor.rotationScalar = lerp(
+      cursor.initialRotationScalar,
+      0,
+      mainCursorEaseFn(animCompletePercentage)
+    )
+    cursor.distanceFromOrbitCenter = lerp(
+      cursor.initialDistanceFromOrbitCenter,
       0,
       mainCursorEaseFn(animCompletePercentage)
     )
@@ -155,8 +172,8 @@ const drawGrid = () => {
 
 const draw = time => {
   /* Clear the canvas */
-  context.fillStyle = "black"
-  context.fillRect(0, 0, canvasWidth, canvasHeight)
+  context.fillStyle = "white"
+  context.fillRect(0, 0, canvas.width, canvas.height)
 
   /* Calculate global time in seconds */
   if (startTime === null) {
@@ -177,15 +194,12 @@ const draw = time => {
 
 // TODO Add draw function
 export const setupCanvas = foodOptions => {
-  init()
   if (document && window) {
-    const canvas = document.getElementById("#food-canvas")
-    // TODO update canvas width after resize
-    canvas.width = canvasWidth
-    canvas.height = canvasHeight
+    canvas = document.getElementById("#food-canvas")
+    init()
+
     context = canvas.getContext("2d")
     gridData = getGridData(foodOptions, canvas.width, canvas.height)
-    // draw(context)
     window.requestAnimationFrame(draw)
   }
 }
