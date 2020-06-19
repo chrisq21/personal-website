@@ -29,6 +29,10 @@ const cursor = {
   y: 0,
   radius: 30,
 }
+let orbitCenterX
+let orbitCenterY
+let distanceFromOrbitCenter
+let rotationScalar
 
 /* Animation controls */
 let startTime = null
@@ -49,6 +53,8 @@ const init = () => {
   const nextPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
   cursor.previousPointIndex = previousPointIndex
   cursor.nextPointIndex = nextPointIndex
+  distanceFromOrbitCenter = 100
+  rotationScalar = 1
 }
 
 const getGridData = (foodOptions, width, height) => {
@@ -98,11 +104,16 @@ const drawCursor = () => {
     linesTraveled === linesToTravel - 1 ? lastLineMvmtEaseFn : lineMvmtEaseFn
   const lineCompletePercentage = (currentTime - newLineTime) / lineTravelSpeed
   if (lineCompletePercentage <= 1) {
-    cursor.x = lerp(startX, endX, easeFn(lineCompletePercentage))
-    cursor.y = lerp(startY, endY, easeFn(lineCompletePercentage))
+    orbitCenterX = lerp(startX, endX, easeFn(lineCompletePercentage))
+    orbitCenterY = lerp(startY, endY, easeFn(lineCompletePercentage))
   } else {
     moveToNextPoint()
   }
+
+  const rotation = ((2 * Math.PI * currentTime) / 2) * rotationScalar
+
+  cursor.x = orbitCenterX + distanceFromOrbitCenter * Math.sin(rotation)
+  cursor.y = orbitCenterY + distanceFromOrbitCenter * Math.cos(rotation)
 
   context.beginPath()
   context.fillStyle = "rgb(185,211,176)"
