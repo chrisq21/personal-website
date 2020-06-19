@@ -1,4 +1,4 @@
-import { init, updateCursorPosition } from "./setup"
+import { init, updateCursorPosition } from "./logic"
 
 /* Cursor */
 const drawCursor = (cursor, animation, context) => {
