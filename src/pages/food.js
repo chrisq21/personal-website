@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState, useEffect } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { graphql } from "gatsby"
-import { setupCanvas } from "../lib/animation/food"
+import { setupCanvas } from "../lib/animation/food/index.js"
 
 const FoodRoulettePage = ({ data }) => {
   const [selectedFoodOption, setSelectedFoodOption] = useState("")
