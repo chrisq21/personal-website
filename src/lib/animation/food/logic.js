@@ -38,16 +38,42 @@ const getGridOptions = (foodOptions, grid, canvas) => {
   return options
 }
 
+export const checkCollisions = (animation, grid, cursor) => {
+  grid.options.forEach((optionData, index) => {
+    const [x, y] = optionData.point
+    if (
+      Math.abs(cursor.center.x - x) < cursor.radius + grid.orbRadius &&
+      Math.abs(cursor.center.y - y) < cursor.radius + grid.orbRadius
+    ) {
+      /* Check to see if the orb is already animating,
+       and whether or not the orb is the most recent orb to animate.
+       This ensures that the same orb doesn't animate over and over again if the cursor hasn't moved on yet.
+       */
+      if (
+        !grid.options[index].shouldAnimate &&
+        index !== grid.recentlyAnimatedIndex
+      ) {
+        grid.options[index].shouldAnimate = true
+        grid.options[index].animTime = animation.currentTime
+        grid.recentlyAnimatedIndex = index
+      }
+    }
+  })
+}
+
+/* Move cursor along a line */
 export const updateCursorPosition = (cursor, grid, animation) => {
-  /* Move cursor across a specified line */
-  const [startX, startY] = grid.options[cursor.startingPointIndex].point
-  const [endX, endY] = grid.options[cursor.destinationPointIndex].point
+  /* Determine ease fn and distance complete */
   const lineMvmtEaseFn =
     animation.linesTraveled === animation.linesToTravel - 1
       ? cursor.easingFns.lastLineMvmt
       : cursor.easingFns.mainLineMvmt
   const lineCompletePercentage =
     (animation.currentTime - animation.newLineTime) / animation.lineTravelSpeed
+
+  /* Calculate orbit center position */
+  const [startX, startY] = grid.options[cursor.startingPointIndex].point
+  const [endX, endY] = grid.options[cursor.destinationPointIndex].point
   if (lineCompletePercentage <= 1) {
     cursor.orbitCenter.x = lerp(
       startX,
@@ -59,6 +85,13 @@ export const updateCursorPosition = (cursor, grid, animation) => {
       endY,
       lineMvmtEaseFn(lineCompletePercentage)
     )
+
+    /* Calculate cursor position in relation to it's rotation around it's orbit */
+    const rotation = Math.PI * animation.currentTime * cursor.rotationScalar
+    cursor.center.x =
+      cursor.orbitCenter.x + cursor.distanceFromOrbitCenter * Math.sin(rotation)
+    cursor.center.y =
+      cursor.orbitCenter.y + cursor.distanceFromOrbitCenter * Math.cos(rotation)
   } else {
     cursor = updateMvmtLine(cursor, grid, animation)
   }
@@ -93,6 +126,15 @@ export const init = (foodOptions, canvas) => {
       "rgb(248,143,121)",
       "rgb(246,170,147)",
     ],
+    ripples: {
+      count: 3,
+      maxAlpha: 0.35,
+      totalTime: 1.5,
+      radiusAddition: canvas.width / 60,
+      animations: [],
+      recentlyAnimatedIndex: null,
+      easeFn: BezierEasing(0.29, 0.81, 0.77, 0.95),
+    },
   }
   grid.options = getGridOptions(foodOptions, grid, canvas)
 
