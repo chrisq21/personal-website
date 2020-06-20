@@ -10,20 +10,36 @@ const drawCursor = (cursor, animation, context) => {
 }
 
 /* Grid */
-const drawGrid = (grid, context, animation) => {
+const drawGrid = (grid, context, animation, audio) => {
   grid.options.forEach((data, index) => {
     const color = grid.palette[index % grid.palette.length]
     context.fillStyle = color
+    const note = audio.notes[index]
 
     if (data.shouldAnimate) {
       grid.options[index].shouldAnimate = false
+      /* Enqueue ripple animation */
       grid.ripples.animations.push({
         startTime: animation.currentTime,
         gridIndex: index,
         deltaTime: 0,
         maxAlpha: grid.ripples.maxAlpha,
         color,
+        note,
       })
+
+      /* Play sound */
+      if (audio.synth) {
+        if (audio.Tone.context.state !== "running") {
+          audio.Tone.context.resume()
+        }
+        audio.synth.triggerAttackRelease(
+          note,
+          "16n",
+          audio.synth.context.currentTime,
+          1
+        )
+      }
     }
 
     const [x, y] = data.point
@@ -79,7 +95,7 @@ export const drawOrbRipples = (grid, animation, context) => {
 }
 
 /* Main drawing function */
-export const draw = (grid, cursor, animation, context, canvas, time) => {
+export const draw = (grid, cursor, animation, audio, context, canvas, time) => {
   /* Clear the canvas */
   context.fillStyle = "white"
   context.fillRect(0, 0, canvas.width, canvas.height)
@@ -90,11 +106,11 @@ export const draw = (grid, cursor, animation, context, canvas, time) => {
   }
   animation.currentTime = (time - animation.startTime) / 1000
 
-  drawGrid(grid, context, animation)
+  drawGrid(grid, context, animation, audio)
   drawCursor(cursor, animation, context)
 
   if (!animation.done) {
-    updateCursorPosition(cursor, grid, animation)
+    updateCursorPosition(cursor, grid, animation, canvas)
     checkCollisions(animation, grid, cursor)
   }
 
@@ -102,9 +118,9 @@ export const draw = (grid, cursor, animation, context, canvas, time) => {
 
   if (animation.currentTime <= animation.totalTime + grid.ripples.totalTime) {
     window.requestAnimationFrame(
-      draw.bind(null, grid, cursor, animation, context, canvas)
+      draw.bind(null, grid, cursor, animation, audio, context, canvas)
     )
   } else {
-    console.log("Animation done.")
+    console.log("Animation Done")
   }
 }

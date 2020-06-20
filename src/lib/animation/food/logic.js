@@ -1,6 +1,37 @@
 import random from "canvas-sketch-util/random"
 import BezierEasing from "bezier-easing"
 import { lerp } from "canvas-sketch-util/math"
+import Tone from "tone"
+
+const setupAudio = async () => {
+  if (Tone.context.state !== "running") {
+    Tone.context.resume()
+  }
+  // Setup a reverb with ToneJS
+  const reverb = new Tone.Reverb({
+    decay: 4,
+    wet: 0.5,
+    preDelay: 0.2,
+  }).toMaster()
+
+  // Load the reverb
+  await reverb.generate()
+
+  // Setup a synth with ToneJS
+  const synth = new Tone.Synth({
+    oscillator: {
+      type: "sine",
+    },
+    envelope: {
+      attack: 0.001,
+      decay: 0.5,
+      sustain: 0.001,
+      release: 5,
+    },
+  }).connect(reverb)
+
+  return { synth, reverb }
+}
 
 const updateMvmtLine = (cursor, grid, animation) => {
   cursor.startingPointIndex = cursor.destinationPointIndex
@@ -62,7 +93,7 @@ export const checkCollisions = (animation, grid, cursor) => {
 }
 
 /* Move cursor along a line */
-export const updateCursorPosition = (cursor, grid, animation) => {
+export const updateCursorPosition = (cursor, grid, animation, canvas) => {
   /* Determine ease fn and distance complete */
   const lineMvmtEaseFn =
     animation.linesTraveled === animation.linesToTravel - 1
@@ -72,7 +103,18 @@ export const updateCursorPosition = (cursor, grid, animation) => {
     (animation.currentTime - animation.newLineTime) / animation.lineTravelSpeed
 
   /* Calculate orbit center position */
-  const [startX, startY] = grid.options[cursor.startingPointIndex].point
+  let startX
+  let startY
+  if (cursor.startingPointIndex < 0) {
+    // Start in the center of the canvas
+    startX = canvas.width / 2
+    startY = canvas.height / 2
+  } else {
+    const startPoint = grid.options[cursor.startingPointIndex].point
+    startX = startPoint[0]
+    startY = startPoint[1]
+  }
+
   const [endX, endY] = grid.options[cursor.destinationPointIndex].point
   if (lineCompletePercentage <= 1) {
     cursor.orbitCenter.x = lerp(
@@ -113,7 +155,7 @@ export const updateCursorPosition = (cursor, grid, animation) => {
   }
 }
 
-export const init = (foodOptions, canvas) => {
+export const init = async (foodOptions, canvas) => {
   /* Grid */
   const grid = {
     size: 4, // total size = grid.size x grid.size
@@ -127,8 +169,8 @@ export const init = (foodOptions, canvas) => {
       "rgb(246,170,147)",
     ],
     ripples: {
-      count: 3,
-      maxAlpha: 0.35,
+      count: 4,
+      maxAlpha: 0.4,
       totalTime: 1.5,
       radiusAddition: canvas.width / 60,
       animations: [],
@@ -156,17 +198,15 @@ export const init = (foodOptions, canvas) => {
     },
 
     radius: canvas.width / 30,
-    initialDistanceFromOrbitCenter: canvas.width / 3,
-    distanceFromOrbitCenter: canvas.width / 3,
-    initialRotationScalar: 5,
-    rotationScalar: 5,
-    startingPointIndex: Math.round((grid.size * grid.size) / 2),
+    initialDistanceFromOrbitCenter: canvas.width / 4,
+    initialRotationScalar: 3,
+    startingPointIndex: -1,
     destinationPointIndex: random.rangeFloor(0, grid.size * grid.size - 1),
   }
 
-  /* Animation controls*/
+  /* Animation */
   const lineTravelSpeed = 1
-  const linesToTravel = 5
+  const linesToTravel = 6
   const animation = {
     startTime: null,
     currentTime: 0,
@@ -177,5 +217,31 @@ export const init = (foodOptions, canvas) => {
     totalTime: lineTravelSpeed * linesToTravel,
   }
 
-  return { cursor, grid, animation }
+  /* Audio */
+  const { synth, reverb } = await setupAudio()
+  const audio = {
+    Tone,
+    synth,
+    reverb,
+    notes: [
+      "A6",
+      "A5",
+      "A4",
+      "A3",
+      "C6",
+      "C5",
+      "C4",
+      "C3",
+      "D6",
+      "D5",
+      "D4",
+      "D3",
+      "F6",
+      "F5",
+      "F4",
+      "F3",
+    ],
+  }
+
+  return { cursor, grid, animation, audio }
 }
