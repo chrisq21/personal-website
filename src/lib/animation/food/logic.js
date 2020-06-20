@@ -183,12 +183,12 @@ export const init = async (foodOptions, canvas) => {
   /* Cursor */
   const cursor = {
     center: {
-      x: 0,
-      y: 0,
+      x: -100,
+      y: -100,
     },
     orbitCenter: {
-      x: 0,
-      y: 0,
+      x: -100,
+      y: -100,
     },
 
     easingFns: {

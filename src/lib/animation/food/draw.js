@@ -124,3 +124,15 @@ export const draw = (grid, cursor, animation, audio, context, canvas, time) => {
     console.log("Animation Done")
   }
 }
+
+export const drawInitial = (
+  grid,
+  cursor,
+  animation,
+  audio,
+  context,
+  canvas,
+  time
+) => {
+  drawGrid(grid, context, animation, audio)
+}

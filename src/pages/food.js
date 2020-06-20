@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useState, useEffect } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { graphql } from "gatsby"
-import { setupCanvas } from "../lib/animation/food/index.js"
+import { showCanvas, startAnimation } from "../lib/animation/food/index.js"
 
 const FoodRoulettePage = ({ data }) => {
   const [selectedFoodOption, setSelectedFoodOption] = useState("")
@@ -42,7 +42,7 @@ const FoodRoulettePage = ({ data }) => {
 
   useEffect(() => {
     if (canvasDimensions > 0) {
-      setupCanvas(data["dinner"].edges)
+      showCanvas(data["dinner"].edges)
     }
   }, [canvasDimensions])
 
@@ -69,6 +69,9 @@ const FoodRoulettePage = ({ data }) => {
         </>
       )}
       <button onClick={spin}>SPIN</button> */}
+      <button onClick={() => startAnimation(data["dinner"].edges)}>
+        Start
+      </button>
 
       <div id="canvas-wrapper" style={{ height: "90vh", width: "100%" }}>
         {canvasDimensions > 0 && (
@@ -79,7 +82,6 @@ const FoodRoulettePage = ({ data }) => {
             style={{
               display: "block",
               margin: "0 auto",
-              border: "1px solid red",
             }}
           ></canvas>
         )}
