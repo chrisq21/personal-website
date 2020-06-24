@@ -168,6 +168,9 @@ export const init = async (foodOptions, canvas) => {
       "rgb(248,143,121)",
       "rgb(246,170,147)",
     ],
+    easeFn: BezierEasing(0.7, 0.01, 0, 0.49),
+    selectedEaseFn: BezierEasing(0.96, 0.25, 0.54, 0.88),
+    selectedMvmtSpeed: 0.5,
     ripples: {
       count: 4,
       maxAlpha: 0.4,
@@ -206,7 +209,7 @@ export const init = async (foodOptions, canvas) => {
 
   /* Animation */
   const lineTravelSpeed = 1
-  const linesToTravel = 6
+  const linesToTravel = 5
   const animation = {
     startTime: null,
     currentTime: 0,
