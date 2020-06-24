@@ -21,7 +21,7 @@ const TreePage = () => {
       console.log("Image Data: ", imageData)
       setImageData(imageData)
     }
-  })
+  }, [])
   return (
     <Layout>
       <SEO title="Tree" />
