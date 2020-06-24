@@ -29,9 +29,14 @@ const TreePage = () => {
         code,
       }
 
+      const str = `client_id=${process.env.GATSBY_INSTAGRAM_CLIENT_ID}&client_secret=${process.env.GATSBY_INSTAGRAM_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=${process.env.GATSBY_INSTAGRAM_REDIRECT_URI}&code=${code}`
+
       const res = await fetch("https://api.instagram.com/oauth/access_token", {
         method: "post",
-        body: JSON.stringify(body),
+        body: str,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       })
 
       const data = await res.json()
