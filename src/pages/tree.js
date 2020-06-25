@@ -24,6 +24,12 @@ const Image = styled.img`
   width: ${({ index, total }) => 100 - (index / total) * 100}%;
   clip-path: circle(40% at center);
   margin: 0;
+
+  &:hover {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+  }
 `
 
 const requestCode = () => {
