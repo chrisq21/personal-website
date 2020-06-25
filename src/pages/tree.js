@@ -9,6 +9,9 @@ const requestCode = () => {
 
 const TreePage = () => {
   const [imageData, setImageData] = useState(null)
+  const [images, setImages] = useState(null)
+  const [imageLoadCounter, setImageLoadCounter] = useState(0)
+
   useEffect(async () => {
     const fetchImageData = async accessToken => {
       // TODO Error handling
@@ -52,6 +55,23 @@ const TreePage = () => {
       setImageData(imageData)
     }
   }, [])
+
+  const handleImageLoad = () => {
+    setImageLoadCounter(imageLoadCounter + 1)
+  }
+
+  useEffect(() => {
+    const renderImages = data => {
+      const imageElements = data.map(({ media_url }) => (
+        <img src={media_url} onLoad={handleImageLoad} />
+      ))
+      return <div>{imageElements}</div>
+    }
+    if (imageData && imageData.length > 0) {
+      setImages(renderImages(imageData))
+    }
+  }, [imageData])
+
   return (
     <Layout>
       <SEO title="Tree" />
@@ -59,6 +79,12 @@ const TreePage = () => {
       {!imageData && (
         <button onClick={requestCode}>I dare you to press this button</button>
       )}
+      {imageData && imageLoadCounter < imageData.length && (
+        <p>
+          Images Loaded: {imageLoadCounter} / {imageData.length}
+        </p>
+      )}
+      {images && { images }}
     </Layout>
   )
 }
