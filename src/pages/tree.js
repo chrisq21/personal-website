@@ -5,16 +5,26 @@ import styled from "styled-components"
 
 const Wrapper = styled.div`
   position: relative;
-  width: 80vw;
+  width: 100%;
   height: 80vh;
 `
 
-const Image = styled.img`
+const ImageWrapper = styled.div`
   position: absolute;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const Image = styled.img`
+  margin: 0;
   height: ${({ index, total }) => 100 - (index / total) * 100}%;
   width: ${({ index, total }) => 100 - (index / total) * 100}%;
+  clip-path: circle(40% at center);
 `
 
 const requestCode = () => {
@@ -77,12 +87,14 @@ const TreePage = () => {
     }
     const renderImages = images => {
       const imageElements = images.map(({ media_url }, index) => (
-        <Image
-          index={index + 1}
-          total={imageData.data.length}
-          src={media_url}
-          onLoad={handleImageLoad}
-        />
+        <ImageWrapper>
+          <Image
+            index={index + 1}
+            total={imageData.data.length}
+            src={media_url}
+            onLoad={handleImageLoad}
+          />
+        </ImageWrapper>
       ))
       return imageElements
     }
