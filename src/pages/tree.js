@@ -60,17 +60,17 @@ const TreePage = () => {
     const handleImageLoad = () => {
       setImageLoadCounter(count => count + 1)
     }
-    const renderImages = data => {
-      const imageElements = data.map(({ media_url }) => (
+    const renderImages = images => {
+      const imageElements = images.map(({ media_url }) => (
         <img src={media_url} onLoad={handleImageLoad} />
       ))
       return <div>{imageElements}</div>
     }
-    if (imageData && imageData.length > 0) {
-      setImages(renderImages(imageData))
+    if (imageData && imageData.data.length > 0) {
+      setImages(renderImages(imageData.data))
     }
   }, [imageData, setImageLoadCounter, setImages])
-
+  console.log(imageLoadCounter)
   return (
     <Layout>
       <SEO title="Tree" />
@@ -78,9 +78,9 @@ const TreePage = () => {
       {!imageData && (
         <button onClick={requestCode}>I dare you to press this button</button>
       )}
-      {imageData && imageLoadCounter < imageData.length && (
+      {imageData && imageData.data && imageLoadCounter < imageData.data.length && (
         <p>
-          Images Loaded: {imageLoadCounter} / {imageData.length}
+          Images Loaded: {imageLoadCounter} / {imageData.data.length}
         </p>
       )}
       {images && { images }}
