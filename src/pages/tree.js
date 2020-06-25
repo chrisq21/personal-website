@@ -25,9 +25,6 @@ const Image = styled.img`
   clip-path: circle(40% at center);
   margin: 0;
 
-  transition: 500ms ease 0s width;
-  transition: 500ms ease 0s height;
-
   &:hover {
     z-index: 1;
     width: 100%;
