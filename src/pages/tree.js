@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import styled from "styled-components"
+import styled, { keyframes } from "styled-components"
 
 const Wrapper = styled.div`
   position: relative;
@@ -15,6 +15,16 @@ const ImageWrapper = styled.div`
   height: 100%;
 `
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`
+
 const Image = styled.img`
   position: absolute;
   left: 50%;
@@ -24,6 +34,11 @@ const Image = styled.img`
   width: ${({ index, total }) => 100 - (index / total) * 100}%;
   margin: 0;
   border-radius: 1000px;
+
+  animation-duration: 1s;
+  animation-delay: ${({ index }) => index}s;
+  animation-name: ${fadeIn}
+  
 
   &:hover {
     border: 3px solid red;
