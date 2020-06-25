@@ -26,7 +26,7 @@ const Image = styled.img`
   width: 0px;
 
   animation-duration: 1s;
-  animation-delay: ${({ index, total }) => total - index}s;
+  animation-delay: ${({ index, total }) => total - index}00ms;
   animation-name: ${({ index, total }) => keyframes`
 
   from {
