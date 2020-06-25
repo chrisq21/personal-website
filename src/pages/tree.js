@@ -35,9 +35,12 @@ const Image = styled.img`
   margin: 0;
   clip-path: circle(44% at center);
 
+  opacity: 0;
+
   animation-duration: 1s;
-  animation-delay: ${({ index }) => index}s;
+  animation-delay: ${({ index, total }) => total / index}s;
   animation-name: ${fadeIn};
+  animation-fill-mode: forwards;
 
   &:hover {
     border: 3px solid red;
