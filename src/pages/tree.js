@@ -64,7 +64,7 @@ const TreePage = () => {
       const imageElements = images.map(({ media_url }) => (
         <img src={media_url} onLoad={handleImageLoad} />
       ))
-      return <div>{imageElements}</div>
+      return imageElements
     }
     if (imageData && imageData.data.length > 0) {
       setImages(renderImages(imageData.data))
@@ -83,7 +83,7 @@ const TreePage = () => {
           Images Loaded: {imageLoadCounter} / {imageData.data.length}
         </p>
       )}
-      {images && { images }}
+      {images && <div>{images}</div>}
     </Layout>
   )
 }
