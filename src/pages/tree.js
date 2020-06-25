@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import styled from "styled-components"
+
+const Wrapper = styled.div`
+  position: relative;
+`
+
+const Image = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: ${({ index, total }) => 100 - (index / total) * 100}%;
+  width: ${({ index, total }) => 100 - (index / total) * 100}%;
+`
 
 const requestCode = () => {
   const authURL = `https://api.instagram.com/oauth/authorize?client_id=${process.env.GATSBY_INSTAGRAM_CLIENT_ID}&redirect_uri=${process.env.GATSBY_INSTAGRAM_REDIRECT_URI}&scope=user_profile,user_media&response_type=code`
@@ -61,13 +74,18 @@ const TreePage = () => {
       setImageLoadCounter(count => count + 1)
     }
     const renderImages = images => {
-      const imageElements = images.map(({ media_url }) => (
-        <img src={media_url} onLoad={handleImageLoad} />
+      const imageElements = images.map(({ media_url }, index) => (
+        <Image
+          index={index + 1}
+          total={imageData.data.length}
+          src={media_url}
+          onLoad={handleImageLoad}
+        />
       ))
       return imageElements
     }
     if (imageData && imageData.data.length > 0) {
-      setImages(renderImages(imageData.data))
+      setImages(renderImages(imageData.data.reverse()))
     }
   }, [imageData, setImageLoadCounter, setImages])
   console.log(imageLoadCounter)
@@ -83,7 +101,7 @@ const TreePage = () => {
           Images Loaded: {imageLoadCounter} / {imageData.data.length}
         </p>
       )}
-      {images && <div>{images}</div>}
+      {images && <Wrapper>{images}</Wrapper>}
     </Layout>
   )
 }
