@@ -20,13 +20,18 @@ const Image = styled.img`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  height: ${({ index, total }) => 100 - (index / total) * 100}%;
   width: ${({ index, total }) => 100 - (index / total) * 100}%;
   clip-path: circle(40% at center);
   margin: 0;
 
+  transition: 500ms ease 0s width;
+  transition: 500ms ease 0s height;
+
   &:hover {
     z-index: 1;
     width: 100%;
+    height: 100%;
     pointer-events: none;
   }
 `
