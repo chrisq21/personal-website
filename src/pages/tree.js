@@ -33,12 +33,11 @@ const Image = styled.img`
   height: auto;
   width: ${({ index, total }) => 100 - (index / total) * 100}%;
   margin: 0;
-  border-radius: 1000px;
+  clip-path: circle(44% at center);
 
   animation-duration: 1s;
   animation-delay: ${({ index }) => index}s;
-  animation-name: ${fadeIn}
-  
+  animation-name: ${fadeIn};
 
   &:hover {
     border: 3px solid red;
