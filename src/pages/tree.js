@@ -10,21 +10,20 @@ const Wrapper = styled.div`
 `
 
 const ImageWrapper = styled.div`
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `
 
 const Image = styled.img`
-  margin: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   height: ${({ index, total }) => 100 - (index / total) * 100}%;
   width: ${({ index, total }) => 100 - (index / total) * 100}%;
   clip-path: circle(40% at center);
+  margin: 0;
 `
 
 const requestCode = () => {
@@ -87,14 +86,12 @@ const TreePage = () => {
     }
     const renderImages = images => {
       const imageElements = images.map(({ media_url }, index) => (
-        <ImageWrapper>
-          <Image
-            index={index + 1}
-            total={imageData.data.length}
-            src={media_url}
-            onLoad={handleImageLoad}
-          />
-        </ImageWrapper>
+        <Image
+          index={index + 1}
+          total={imageData.data.length}
+          src={media_url}
+          onLoad={handleImageLoad}
+        />
       ))
       return imageElements
     }
@@ -115,7 +112,11 @@ const TreePage = () => {
           Images Loaded: {imageLoadCounter} / {imageData.data.length}
         </p>
       )}
-      {images && <Wrapper>{images}</Wrapper>}
+      {images && (
+        <Wrapper>
+          <ImageWrapper>{images}</ImageWrapper>
+        </Wrapper>
+      )}
     </Layout>
   )
 }
