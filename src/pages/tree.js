@@ -101,7 +101,7 @@ const TreePage = () => {
       return imageElements
     }
     if (imageData && imageData.data.length > 0) {
-      setImages(renderImages(imageData.data.reverse()))
+      setImages(renderImages(imageData.data))
     }
   }, [imageData, setImageLoadCounter, setImages])
   console.log(imageLoadCounter)
