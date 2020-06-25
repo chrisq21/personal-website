@@ -58,7 +58,7 @@ const TreePage = () => {
 
   useEffect(() => {
     const handleImageLoad = () => {
-      setImageLoadCounter(imageLoadCounter + 1)
+      setImageLoadCounter(count => count + 1)
     }
     const renderImages = data => {
       const imageElements = data.map(({ media_url }) => (
@@ -69,7 +69,7 @@ const TreePage = () => {
     if (imageData && imageData.length > 0) {
       setImages(renderImages(imageData))
     }
-  }, [imageData, imageLoadCounter, setImageLoadCounter, setImages])
+  }, [imageData, setImageLoadCounter, setImages])
 
   return (
     <Layout>
