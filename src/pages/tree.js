@@ -69,7 +69,7 @@ const TreePage = () => {
     if (imageData && imageData.length > 0) {
       setImages(renderImages(imageData))
     }
-  }, [imageData, setImageLoadCounter, setImages])
+  }, [imageData, imageLoadCounter, setImageLoadCounter, setImages])
 
   return (
     <Layout>
