@@ -37,8 +37,8 @@ const Image = styled.img`
 
   opacity: 0;
 
-  animation-duration: 1s;
-  animation-delay: ${({ index, total }) => total - index}s;
+  animation-duration: 250ms;
+  animation-delay: ${({ index, total }) => total - index}00ms;
   animation-name: ${fadeIn};
   animation-fill-mode: forwards;
 
