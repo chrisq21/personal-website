@@ -14,17 +14,6 @@ const ImageWrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-`
-
 const Image = styled.img`
   position: absolute;
   left: 50%;
@@ -36,8 +25,8 @@ const Image = styled.img`
 
   width: 0px;
 
-  animation-duration: 250ms;
-  animation-delay: ${({ index, total }) => total - index}00ms;
+  animation-duration: 500ms;
+  animation-delay: ${({ index, total }) => (total - index) / 2}00ms;
   animation-name: ${({ index, total }) => keyframes`
 
   from {
@@ -47,7 +36,7 @@ const Image = styled.img`
   to {
     width: ${100 - (index / total) * 100}%;
   }
-  
+
 `};
   animation-fill-mode: forwards;
 
