@@ -31,15 +31,24 @@ const Image = styled.img`
   top: 50%;
   transform: translate(-50%, -50%);
   height: auto;
-  width: ${({ index, total }) => 100 - (index / total) * 100}%;
   margin: 0;
   clip-path: circle(44% at center);
 
-  opacity: 0;
+  width: 0px;
 
   animation-duration: 250ms;
   animation-delay: ${({ index, total }) => total - index}00ms;
-  animation-name: ${fadeIn};
+  animation-name: ${({ index, total }) => keyframes`
+
+  from {
+    width: 0px;
+  }
+
+  to {
+    width: ${100 - (index / total) * 100}%;
+  }
+  
+`};
   animation-fill-mode: forwards;
 
   &:hover {
