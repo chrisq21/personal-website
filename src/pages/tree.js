@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import styled, { keyframes } from "styled-components"
+import mockImageData from "../components/Tree/mockData"
 
 const Wrapper = styled.div`
   position: relative;
@@ -55,7 +56,7 @@ const TreePage = () => {
   const [images, setImages] = useState(null)
   const [imageLoadCounter, setImageLoadCounter] = useState(0)
 
-  useEffect(async () => {
+  useEffect(() => {
     const fetchImageData = async accessToken => {
       // TODO Error handling
       const res = await fetch(
@@ -74,7 +75,7 @@ const TreePage = () => {
         redirect_uri: process.env.GATSBY_INSTAGRAM_REDIRECT_URI,
         code,
       }
-
+      // TODO generate str from body
       const str = `client_id=${process.env.GATSBY_INSTAGRAM_CLIENT_ID}&client_secret=${process.env.GATSBY_INSTAGRAM_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=${process.env.GATSBY_INSTAGRAM_REDIRECT_URI}&code=${code}`
 
       const res = await fetch("https://api.instagram.com/oauth/access_token", {
@@ -84,18 +85,25 @@ const TreePage = () => {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       })
-
+      // TODO wrap in try/catch
       const data = await res.json()
-      console.log("fetchAccessToken: ", data)
       return data.access_token
     }
 
-    const searchParams = window.location.search
-    if (searchParams && searchParams.includes("code")) {
+    const fetchTokenAndImage = async searchParams => {
       const code = searchParams.split("code=")[1]
       const accessToken = await fetchAccessToken(code)
       const imageData = await fetchImageData(accessToken)
       setImageData(imageData)
+    }
+
+    const searchParams = window.location.search
+    if (searchParams && searchParams.includes("code")) {
+      fetchTokenAndImage(searchParams)
+    }
+
+    if (process.env.GATSBY_LOCAL_DEV) {
+      setImageData(mockImageData)
     }
   }, [])
 
@@ -104,8 +112,9 @@ const TreePage = () => {
       setImageLoadCounter(count => count + 1)
     }
     const renderImages = images => {
-      const imageElements = images.map(({ media_url }, index) => (
+      const imageElements = images.map(({ media_url, id }, index) => (
         <Image
+          key={id}
           index={index + 1}
           total={imageData.data.length}
           src={media_url}
@@ -119,6 +128,7 @@ const TreePage = () => {
     }
   }, [imageData, setImageLoadCounter, setImages])
   console.log(imageLoadCounter)
+
   return (
     <Layout>
       <SEO title="Tree" />
