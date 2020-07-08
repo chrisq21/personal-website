@@ -1,4 +1,4 @@
-export const ANIMATION_SPEED_MS = 350
+export const ANIMATION_SPEED_MS = 300
 
 /* colors */
 export const darkBrown = `#834200`
