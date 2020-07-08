@@ -107,7 +107,7 @@ export const draw = (
   time
 ) => {
   /* Clear the canvas */
-  context.fillStyle = "black"
+  context.fillStyle = "white"
   context.fillRect(0, 0, canvas.width, canvas.height)
 
   /* Calculate global time in seconds */

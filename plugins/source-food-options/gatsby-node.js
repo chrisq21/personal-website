@@ -28,7 +28,7 @@ const fetchFood = async params => {
   try {
     const res = await fetch(url.href, {
       headers: {
-        Authorization: `Bearer ${process.env.YELP_API_KEY}`,
+        Authorization: `Bearer ${process.env.GATSBY_YELP_API_KEY}`,
       },
     })
     if (res.statusText !== "OK")
