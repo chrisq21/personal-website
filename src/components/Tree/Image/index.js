@@ -7,6 +7,7 @@ const TreeImage = ({
   id,
   imageURL,
   size,
+  isInitialAnimationDone,
   onImageSelected,
   onImageLoad,
 }) => {
@@ -23,6 +24,7 @@ const TreeImage = ({
         isUnderSelectedImage={
           selectedImageIndex >= 0 && selectedImageIndex <= index
         }
+        isInitialAnimationDone={isInitialAnimationDone}
       />
       <ImageWrapper
         onClick={handleImageSelected}
@@ -30,8 +32,13 @@ const TreeImage = ({
         key={id}
         isSelected={selectedImageIndex === index}
         index={index}
+        isInitialAnimationDone={isInitialAnimationDone}
       >
-        <ImageOverlay isSelected={selectedImageIndex === index} index={index} />
+        <ImageOverlay
+          index={index}
+          isSelected={selectedImageIndex === index}
+          isInitialAnimationDone={isInitialAnimationDone}
+        />
         <Image src={imageURL} onLoad={onImageLoad} />
       </ImageWrapper>
     </div>

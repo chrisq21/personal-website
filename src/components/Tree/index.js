@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useEffect, useState, useRef } from "react"
 import styled from "styled-components"
 import { getBaseImageSize, getImageSizeByIndex } from "./helpers"
 import TreeImage from "./Image"
 import Controls from "./controls"
+import { ANIMATION_SPEED_MS } from "./constants"
 
 const OuterWrapper = styled.div`
   position: relative;
@@ -23,6 +24,20 @@ const InnerWrapper = styled.div`
 `
 
 const TreeWrapper = ({ images }) => {
+  const [shouldShowTree, setShouldShowTree] = useState(false)
+  const [imagesLoadedCounter, setImagesLoadedCounter] = useState(0)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(-1)
+  const [isInitialAnimationDone, setIsInitialAnimationDone] = useState(false)
+  const wrapperRef = useRef(null)
+
+  useEffect(() => {
+    if (shouldShowTree) {
+      setTimeout(() => {
+        setIsInitialAnimationDone(true)
+      }, images.length * ANIMATION_SPEED_MS)
+    }
+  }, [shouldShowTree])
+
   const onClickShowTree = () => {
     setShouldShowTree(true)
   }
@@ -35,20 +50,8 @@ const TreeWrapper = ({ images }) => {
     setSelectedImageIndex(index)
   }
 
-  const [imagesLoadedCounter, setImagesLoadedCounter] = React.useState(0)
-  const [shouldShowTree, setShouldShowTree] = React.useState(false)
-  const [selectedImageIndex, setSelectedImageIndex] = React.useState(-1)
-  const wrapperRef = React.useRef(null)
-
   const isDoneLoading = imagesLoadedCounter === images.length
   const baseImageSize = getBaseImageSize(wrapperRef)
-
-  /* TODO 
-    Calculate if animation is done with JS instead of all the styled components hacks.
-    use animationSpeed * images.length for total animation time
-    Once shouldShowTree is true, set a timeout for the animation time. 
-    When the timeout complete, remove the transition, etc
-  */
 
   return (
     <div>
@@ -75,6 +78,7 @@ const TreeWrapper = ({ images }) => {
                 selectedImageIndex={selectedImageIndex}
                 onImageLoad={onImageLoad}
                 onImageSelected={onImageSelected}
+                isInitialAnimationDone={isInitialAnimationDone}
               />
             )
           })}

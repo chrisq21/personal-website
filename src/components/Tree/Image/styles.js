@@ -1,6 +1,5 @@
 import styled, { keyframes } from "styled-components"
-
-const ANIMATION_SPEED_MS = 300
+import { ANIMATION_SPEED_MS, darkBrown, lightBrown } from "../constants"
 
 const fadeInMain = keyframes`
   from {
@@ -24,10 +23,17 @@ const fadeInOverlay = keyframes`
 
 const FadeInAnimation = styled.div`
   animation-fill-mode: forwards;
-
+  animation-timing-function: ease;
   animation-name: ${fadeInMain};
   animation-delay: ${({ index }) => index * ANIMATION_SPEED_MS}ms;
   animation-duration: ${ANIMATION_SPEED_MS}ms;
+
+  ${({ isInitialAnimationDone }) =>
+    isInitialAnimationDone &&
+    `
+    animation-delay: 0s;
+    animation-duration: 100ms;
+  `}
 `
 
 const AbsoluteCenterCircleFadeIn = styled(FadeInAnimation)`
@@ -53,7 +59,7 @@ export const ImageBorder = styled(AbsoluteCenterCircleFadeIn)`
   z-index: 3;
   pointer-events: none;
   border-style: solid;
-  border-color: #834200;
+  border-color: ${darkBrown};
 
   height: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
@@ -63,7 +69,7 @@ export const ImageBorder = styled(AbsoluteCenterCircleFadeIn)`
 
 export const ImageOverlay = styled(FadeInAnimation)`
   opacity: 0;
-  background: #d56c01;
+  background: ${lightBrown};
   position: absolute;
   top: 0;
   left: 0;
@@ -71,12 +77,20 @@ export const ImageOverlay = styled(FadeInAnimation)`
   height: 100%;
   border-radius: 50%;
 
-  &:hover {
-    animation: none;
-    opacity: 0;
-  }
-
+  // Wait ANIMATION_SPEED_MS milliseconds longer than normal to display the image without overlay initially
+  animation-delay: ${({ index }) => (index + 1) * ANIMATION_SPEED_MS}ms;
   animation-name: ${fadeInOverlay};
+
+  ${({ isInitialAnimationDone }) =>
+    isInitialAnimationDone &&
+    `
+      animation-delay: 0s;
+      &:hover {
+        animation-direction: reverse;
+      }
+    `}
+
+  ${({ isSelected }) => isSelected && ` animation-direction: reverse; `}
 `
 
 export const Image = styled.img`
