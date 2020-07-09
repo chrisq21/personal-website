@@ -1,3 +1,7 @@
+import random from "canvas-sketch-util/random"
+import { lerp } from "canvas-sketch-util/math"
+import BezierEasing from "bezier-easing"
+
 export default class Grid {
   constructor(canvasWidth, canvasHeight, foodArray) {
     this.easeFn = BezierEasing(0.7, 0.01, 0, 0.49)
@@ -88,7 +92,7 @@ export default class Grid {
     })
   }
 
-  drawGrid(context, animator) {
+  draw(context, animator) {
     this.options.forEach((foodOptionData, index) => {
       const color = this.palette[index % this.palette.length]
       this.options[index].color = color

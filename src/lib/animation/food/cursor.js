@@ -3,12 +3,11 @@ import { lerp } from "canvas-sketch-util/math"
 import BezierEasing from "bezier-easing"
 
 export default class Cursor {
-  constructor(radius, initialDistanceFromOrbitCenter, destinationPointIndex) {
+  constructor(radius, initialDistanceFromOrbitCenter, gridSize) {
     const initialRotationScalar = 3
 
     this.color = `rgb(185,211,176)`
-
-    this.destinationPointIndex = destinationPointIndex
+    this.endPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
     this.distanceFromOrbitCenter = initialDistanceFromOrbitCenter
     this.easingFns = {
       mainLineMvmt: BezierEasing(0.76, 0.02, 0.73, 0.93),
@@ -28,6 +27,8 @@ export default class Cursor {
     this.radius = radius
     this.rotationScalar = initialRotationScalar
     this.startPointIndex = -1
+
+    this.drawSelectionMovement = this.drawSelectionMovement.bind(this)
   }
 
   getEasingFunction(isLastLine) {
@@ -45,7 +46,9 @@ export default class Cursor {
   }
 
   getLineCompletePercentage(currentTime, actionTime, lineTravelSpeed) {
-    return (currentTime - actionTime) / lineTravelSpeed
+    // TODO  use lineTraveSpeed from animator
+    // console.log(currentTime)
+    return (currentTime - actionTime) / 10
   }
 
   // TODO add docs
@@ -54,17 +57,10 @@ export default class Cursor {
    */
   updateMvmtLine(animator, grid) {
     /*  Set the start point equal to the end point, then set the end point equal to a random point on the grid. */
-    this.startPointIndex = this.destinationPointIndex
-    this.destinationPointIndex = random.rangeFloor(0, grid.size * grid.size - 1)
+    this.startPointIndex = this.endPointIndex
+    this.endPointIndex = random.rangeFloor(0, grid.size * grid.size - 1)
 
     animator.incrementLinesTraveled()
-    // in incrementLinesTraveled function, do check below
-
-    // this.actiontime = this.currentTime
-    // this.linesTraveled = this.linesTraveled + 1
-    // if (this.linesTraveled >= this.linesToTravel && !this.done) {
-    //   this.done = true
-    // }
   }
 
   // TODO add docs
@@ -79,7 +75,7 @@ export default class Cursor {
     const {
       currentTime,
       actionTime,
-      LINE_TRAVEL_SPEED,
+      lineTravelSpeed,
       isLastLine,
       canvas,
     } = animator
@@ -89,8 +85,10 @@ export default class Cursor {
     const lineCompletePercentage = this.getLineCompletePercentage(
       currentTime,
       actionTime,
-      LINE_TRAVEL_SPEED
+      lineTravelSpeed
     )
+
+    console.log("lineCompletePercentage: ", lineCompletePercentage)
 
     if (lineCompletePercentage <= 1) {
       const canvasCenter = [canvas.width / 2, canvas.height / 2]
@@ -111,10 +109,8 @@ export default class Cursor {
 
       // Calculate cursor point relative to it's rotation around the orbit point
       const rotation = Math.PI * currentTime * this.rotationScalar
-      this.x = orbitX + this.distanceFromOrbitCenter * Math.sin(rotation)
-      this.y = orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
-
-      this.setpoint(cursorX, cursorY)
+      this.point.x = orbitX + this.distanceFromOrbitCenter * Math.sin(rotation)
+      this.point.y = orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
     } else {
       this.updateMvmtLine(animator, grid)
     }
@@ -155,6 +151,7 @@ export default class Cursor {
   drawSelectionMovement(context, animator, grid) {
     this.updatePositionAlongLine(animator, grid)
     this.updateSettings(animator)
+
     context.beginPath()
     context.fillStyle = this.color
     context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)

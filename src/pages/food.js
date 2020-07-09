@@ -2,7 +2,8 @@ import React, { useLayoutEffect, useState, useEffect } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { graphql } from "gatsby"
-import { showCanvas, startAnimation } from "../lib/animation/food/index.js"
+// import { showCanvas, startAnimation } from "../lib/animation/food/index.js"
+import { startAnimation } from "../lib/animation/food/index.js"
 
 const FoodRoulettePage = ({ data }) => {
   const [selectedFoodOption, setSelectedFoodOption] = useState(null)
@@ -22,7 +23,7 @@ const FoodRoulettePage = ({ data }) => {
 
   useEffect(() => {
     if (canvasDimensions > 0) {
-      showCanvas(data["dinner"].edges)
+      // showCanvas(data["dinner"].edges)
     }
   }, [canvasDimensions])
 
