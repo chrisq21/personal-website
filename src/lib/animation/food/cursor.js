@@ -7,10 +7,7 @@ export default class Cursor {
     const initialRotationScalar = 3
 
     this.color = `rgb(185,211,176)`
-    this.cursorPoint = {
-      x: -100,
-      y: -100,
-    }
+
     this.destinationPointIndex = destinationPointIndex
     this.distanceFromOrbitCenter = initialDistanceFromOrbitCenter
     this.easingFns = {
@@ -21,6 +18,10 @@ export default class Cursor {
     this.initialDistanceFromOrbitCenter = initialDistanceFromOrbitCenter
     this.initialRotationScalar = initialRotationScalar
     this.orbitPoint = {
+      x: -100,
+      y: -100,
+    }
+    this.point = {
       x: -100,
       y: -100,
     }
@@ -84,9 +85,6 @@ export default class Cursor {
     } = animator
     const { options: gridOptions } = grid
 
-    // Get updated rotation and distanceFromOrbit settings
-    updateSettings(animator)
-
     // Determine how far the cursor is along the line
     const lineCompletePercentage = this.getLineCompletePercentage(
       currentTime,
@@ -116,7 +114,7 @@ export default class Cursor {
       this.x = orbitX + this.distanceFromOrbitCenter * Math.sin(rotation)
       this.y = orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
 
-      this.setCursorPoint(cursorX, cursorY)
+      this.setpoint(cursorX, cursorY)
     } else {
       this.updateMvmtLine(animator, grid)
     }
@@ -145,5 +143,21 @@ export default class Cursor {
         mainEasingFn(animDonePerc)
       )
     }
+  }
+
+  // TODO document
+  /**
+   *
+   * @param {*} context
+   * @param {*} animator
+   * @param {*} grid
+   */
+  drawSelectionMovement(context, animator, grid) {
+    this.updatePositionAlongLine(animator, grid)
+    this.updateSettings(animator)
+    context.beginPath()
+    context.fillStyle = this.color
+    context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)
+    context.fill()
   }
 }
