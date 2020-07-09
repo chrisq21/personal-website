@@ -11,9 +11,36 @@ export const startAnimation = (foodOptions, setSelectedFoodOption) => {
     const canvas = document.getElementById("#food-canvas")
     const context = canvas.getContext("2d")
     const animator = new Animator(canvas)
-
     const grid = new Grid(canvas.width, canvas.height, foodOptions)
     const cursor = new Cursor(canvas.width / 30, canvas.width / 4, grid.size)
-    animator.startSelectionAnimation(canvas, context, grid, cursor)
+    window.requestAnimationFrame(
+      drawSelectionAnimation.bind(null, canvas, context, animator, cursor, grid)
+    )
+  }
+}
+
+const drawSelectionAnimation = (
+  canvas,
+  context,
+  animator,
+  cursor,
+  grid,
+  elapsedTime
+) => {
+  animator.clearCanvas(context, canvas.width, canvas.height)
+  animator.setCurrentTime(elapsedTime)
+  if (animator.actionTime === null) {
+    animator.actionTime = animator.currentTime
+  }
+
+  grid.draw(context, animator)
+  cursor.drawSelectionMovement(context, animator, grid)
+
+  if (!animator.done) {
+    window.requestAnimationFrame(
+      drawSelectionAnimation.bind(null, canvas, context, animator, cursor, grid)
+    )
+  } else {
+    console.log("DONEs")
   }
 }

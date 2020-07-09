@@ -1,8 +1,6 @@
-import Grid from "./grid"
-
 export default class Animator {
   constructor(canvas) {
-    const lineTravelSpeed = 1
+    const lineTravelSpeed = 1.2234
     const linesToTravel = 5
 
     this.actionTime = null
@@ -14,11 +12,18 @@ export default class Animator {
     this.linesToTravel = linesToTravel
     this.startTime = null
     this.totalTime = lineTravelSpeed * linesToTravel
+
+    this.incrementLinesTraveled = this.incrementLinesTraveled.bind(this)
   }
 
   incrementLinesTraveled() {
-    this.actiontime = this.currentTime
+    this.actionTime = this.currentTime
     this.linesTraveled = this.linesTraveled + 1
+
+    if (this.linesTraveled === this.linesTraveled - 1) {
+      this.isLastLine = true
+    }
+
     if (this.linesTraveled >= this.linesToTravel && !this.done) {
       this.done = true
     }
@@ -56,8 +61,6 @@ export default class Animator {
     if (this.actionTime === null) {
       this.actionTime = this.currentTime
     }
-
-    console.log(this.actionTime)
 
     grid.draw(context, this)
     cursor.drawSelectionMovement(context, this, grid)

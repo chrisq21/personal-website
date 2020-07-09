@@ -48,7 +48,7 @@ export default class Cursor {
   getLineCompletePercentage(currentTime, actionTime, lineTravelSpeed) {
     // TODO  use lineTraveSpeed from animator
     // console.log(currentTime)
-    return (currentTime - actionTime) / 10
+    return (currentTime - actionTime) / lineTravelSpeed
   }
 
   // TODO add docs
@@ -88,12 +88,10 @@ export default class Cursor {
       lineTravelSpeed
     )
 
-    console.log("lineCompletePercentage: ", lineCompletePercentage)
-
     if (lineCompletePercentage <= 1) {
       const canvasCenter = [canvas.width / 2, canvas.height / 2]
       const startPoint =
-        this.startPointIndex > 0
+        this.startPointIndex >= 0
           ? gridOptions[this.startPointIndex].point
           : canvasCenter
       const endPoint = grid.options[this.endPointIndex].point
@@ -133,6 +131,7 @@ export default class Cursor {
         0,
         mainEasingFn(animDonePerc)
       )
+
       this.distanceFromOrbitCenter = lerp(
         this.initialDistanceFromOrbitCenter,
         0,
@@ -149,8 +148,8 @@ export default class Cursor {
    * @param {*} grid
    */
   drawSelectionMovement(context, animator, grid) {
-    this.updatePositionAlongLine(animator, grid)
     this.updateSettings(animator)
+    this.updatePositionAlongLine(animator, grid)
 
     context.beginPath()
     context.fillStyle = this.color
