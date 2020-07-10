@@ -1,6 +1,10 @@
+// TODO document
+/**
+ *
+ */
 export default class Animator {
   constructor(canvas) {
-    const lineTravelSpeed = 1.2234
+    const lineTravelSpeed = 1.2
     const linesToTravel = 5
 
     this.actionTime = null
@@ -12,23 +16,33 @@ export default class Animator {
     this.linesToTravel = linesToTravel
     this.startTime = null
     this.totalTime = lineTravelSpeed * linesToTravel
+    this.travelAnimationDone = false
 
     this.incrementLinesTraveled = this.incrementLinesTraveled.bind(this)
   }
 
+  // TODO document
+  /**
+   *
+   */
   incrementLinesTraveled() {
     this.actionTime = this.currentTime
     this.linesTraveled = this.linesTraveled + 1
 
-    if (this.linesTraveled === this.linesTraveled - 1) {
+    if (this.linesTraveled === this.linesToTravel - 1) {
       this.isLastLine = true
     }
 
-    if (this.linesTraveled >= this.linesToTravel && !this.done) {
-      this.done = true
+    if (this.linesTraveled >= this.linesToTravel) {
+      this.travelAnimationDone = true
     }
   }
 
+  // TODO document
+  /**
+   *
+   * @param {*} elapsedTime
+   */
   setCurrentTime(elapsedTime) {
     /* Calculate global time in seconds */
     if (this.startTime === null) {
@@ -39,9 +53,16 @@ export default class Animator {
 
   startWaitingAnimation() {}
 
+  // TODO document
+  /**
+   *
+   * @param {*} canvas
+   * @param {*} context
+   * @param {*} grid
+   * @param {*} cursor
+   */
   startSelectionAnimation(canvas, context, grid, cursor) {
     // Draw
-    console.log("startSelectionAnimation")
     window.requestAnimationFrame(
       this.drawSelectionAnimation.bind(this, canvas, context, grid, cursor)
     )
@@ -49,28 +70,15 @@ export default class Animator {
 
   startInfoAnimation() {}
 
+  // TODO document
+  /**
+   *
+   * @param {*} context
+   * @param {*} canvasWidth
+   * @param {*} canvasHeight
+   */
   clearCanvas(context, canvasWidth, canvasHeight) {
     context.fillStyle = "white"
     context.fillRect(0, 0, canvasWidth, canvasHeight)
-  }
-
-  drawSelectionAnimation(canvas, context, grid, cursor, elapsedTime) {
-    this.clearCanvas(context, canvas.width, canvas.height)
-    this.setCurrentTime(elapsedTime)
-
-    if (this.actionTime === null) {
-      this.actionTime = this.currentTime
-    }
-
-    grid.draw(context, this)
-    cursor.drawSelectionMovement(context, this, grid)
-
-    if (!this.done) {
-      window.requestAnimationFrame(
-        this.drawSelectionAnimation.bind(this, canvas, context, grid, cursor)
-      )
-    } else {
-      console.log("DONEs")
-    }
   }
 }

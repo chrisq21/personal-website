@@ -2,6 +2,10 @@ import random from "canvas-sketch-util/random"
 import { lerp } from "canvas-sketch-util/math"
 import BezierEasing from "bezier-easing"
 
+// TODO document
+/**
+ *
+ */
 export default class Cursor {
   constructor(radius, initialDistanceFromOrbitCenter, gridSize) {
     const initialRotationScalar = 3
@@ -31,12 +35,25 @@ export default class Cursor {
     this.drawSelectionMovement = this.drawSelectionMovement.bind(this)
   }
 
+  // TODO document
+  /**
+   *
+   * @param {*} isLastLine
+   */
   getEasingFunction(isLastLine) {
     return isLastLine
       ? this.easingFns.lastLineMvmt
       : this.easingFns.mainLineMvmt
   }
 
+  // TODO document
+  /**
+   *
+   * @param {*} startPoint
+   * @param {*} endPoint
+   * @param {*} lineCompletePercentage
+   * @param {*} lineMvmtEaseFn
+   */
   getOrbitPoint(startPoint, endPoint, lineCompletePercentage, lineMvmtEaseFn) {
     const [startX, startY] = startPoint
     const [endX, endY] = endPoint
@@ -45,9 +62,14 @@ export default class Cursor {
     return [x, y]
   }
 
+  // TODO document
+  /**
+   *
+   * @param {*} currentTime
+   * @param {*} actionTime
+   * @param {*} lineTravelSpeed
+   */
   getLineCompletePercentage(currentTime, actionTime, lineTravelSpeed) {
-    // TODO  use lineTraveSpeed from animator
-    // console.log(currentTime)
     return (currentTime - actionTime) / lineTravelSpeed
   }
 
@@ -81,6 +103,8 @@ export default class Cursor {
     } = animator
     const { options: gridOptions } = grid
 
+    console.log(isLastLine)
+
     // Determine how far the cursor is along the line
     const lineCompletePercentage = this.getLineCompletePercentage(
       currentTime,
@@ -110,7 +134,9 @@ export default class Cursor {
       this.point.x = orbitX + this.distanceFromOrbitCenter * Math.sin(rotation)
       this.point.y = orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
     } else {
-      this.updateMvmtLine(animator, grid)
+      if (!animator.travelAnimationDone) {
+        this.updateMvmtLine(animator, grid)
+      }
     }
   }
 

@@ -2,6 +2,10 @@ import random from "canvas-sketch-util/random"
 import { lerp } from "canvas-sketch-util/math"
 import BezierEasing from "bezier-easing"
 
+// TODO document
+/**
+ *
+ */
 export default class Grid {
   constructor(canvasWidth, canvasHeight, foodArray) {
     this.easeFn = BezierEasing(0.7, 0.01, 0, 0.49)
@@ -92,7 +96,14 @@ export default class Grid {
     })
   }
 
-  draw(context, animator) {
+  // TODO document
+  /**
+   *
+   * @param {*} context
+   * @param {*} animator
+   * @param {*} cursor
+   */
+  draw(context, animator, cursor) {
     this.options.forEach((foodOptionData, index) => {
       const color = this.palette[index % this.palette.length]
       this.options[index].color = color
@@ -133,8 +144,17 @@ export default class Grid {
       context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
       context.fill()
     })
+
+    this.checkCollisions(cursor, animator)
+    this.drawOrbRipples(context, animator)
   }
 
+  // TODO document
+  /**
+   *
+   * @param {*} context
+   * @param {*} animator
+   */
   drawOrbRipples(context, animator) {
     this.ripple.animations.forEach((rippleAnimation, index) => {
       const {

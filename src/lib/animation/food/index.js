@@ -5,6 +5,8 @@ import Cursor from "./cursor"
 // TODO document
 /**
  *
+ * @param {*} foodOptions
+ * @param {*} setSelectedFoodOption
  */
 export const startAnimation = (foodOptions, setSelectedFoodOption) => {
   if (document && window) {
@@ -19,6 +21,16 @@ export const startAnimation = (foodOptions, setSelectedFoodOption) => {
   }
 }
 
+// TODO document
+/**
+ *
+ * @param {*} canvas
+ * @param {*} context
+ * @param {*} animator
+ * @param {*} cursor
+ * @param {*} grid
+ * @param {*} elapsedTime
+ */
 const drawSelectionAnimation = (
   canvas,
   context,
@@ -33,14 +45,14 @@ const drawSelectionAnimation = (
     animator.actionTime = animator.currentTime
   }
 
-  grid.draw(context, animator)
+  grid.draw(context, animator, cursor)
   cursor.drawSelectionMovement(context, animator, grid)
 
-  if (!animator.done) {
+  if (animator.travelAnimationDone) {
+    console.log("DONE")
+  } else {
     window.requestAnimationFrame(
       drawSelectionAnimation.bind(null, canvas, context, animator, cursor, grid)
     )
-  } else {
-    console.log("DONEs")
   }
 }
