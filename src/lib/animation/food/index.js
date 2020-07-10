@@ -1,6 +1,7 @@
 import Animator from "./animator"
-import Grid from "./grid"
+import Audio from "./audio"
 import Cursor from "./cursor"
+import Grid from "./grid"
 
 // TODO document
 /**
@@ -15,8 +16,17 @@ export const startAnimation = (foodOptions, setSelectedFoodOption) => {
     const animator = new Animator(canvas)
     const grid = new Grid(canvas.width, canvas.height, foodOptions)
     const cursor = new Cursor(canvas.width / 30, canvas.width / 4, grid.size)
+    const audio = new Audio()
     window.requestAnimationFrame(
-      drawSelectionAnimation.bind(null, canvas, context, animator, cursor, grid)
+      drawSelectionAnimation.bind(
+        null,
+        canvas,
+        context,
+        animator,
+        cursor,
+        grid,
+        audio
+      )
     )
   }
 }
@@ -37,6 +47,7 @@ const drawSelectionAnimation = (
   animator,
   cursor,
   grid,
+  audio,
   elapsedTime
 ) => {
   animator.clearCanvas(context, canvas.width, canvas.height)
@@ -45,14 +56,22 @@ const drawSelectionAnimation = (
     animator.actionTime = animator.currentTime
   }
 
-  grid.draw(context, animator, cursor)
+  grid.draw(context, animator, cursor, audio)
   cursor.drawSelectionMovement(context, animator, grid)
 
   if (animator.travelAnimationDone) {
     console.log("DONE")
   } else {
     window.requestAnimationFrame(
-      drawSelectionAnimation.bind(null, canvas, context, animator, cursor, grid)
+      drawSelectionAnimation.bind(
+        null,
+        canvas,
+        context,
+        animator,
+        cursor,
+        grid,
+        audio
+      )
     )
   }
 }

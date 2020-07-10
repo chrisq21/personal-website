@@ -103,13 +103,12 @@ export default class Grid {
    * @param {*} animator
    * @param {*} cursor
    */
-  draw(context, animator, cursor) {
+  draw(context, animator, cursor, audio) {
     this.options.forEach((foodOptionData, index) => {
       const color = this.palette[index % this.palette.length]
       this.options[index].color = color
       context.fillStyle = color
-      // TODO add note
-      // const note = audio.notes[index]
+
       if (foodOptionData.shouldAnimate) {
         // Queue up ripple animation
         this.options[index].shouldAnimate = false
@@ -119,24 +118,11 @@ export default class Grid {
           deltaTime: 0,
           maxAlpha: this.ripple.maxAlpha,
           color,
-          note: null,
         })
 
-        // TODO add audio
-        {
-          // /* Play sound */
-          // if (audio.synth) {
-          //   if (audio.Tone.context.state !== "running") {
-          //     audio.Tone.context.resume()
-          //   }
-          //   audio.synth.triggerAttackRelease(
-          //     note,
-          //     "16n",
-          //     audio.synth.context.currentTime,
-          //     1
-          //   )
-          // }
-        }
+        // Play note that corresponds to the grid point
+        const note = audio.gridNotes[index]
+        audio.playNote(note)
       }
 
       const [x, y] = foodOptionData.point
