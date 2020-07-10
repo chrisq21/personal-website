@@ -7,9 +7,14 @@ import BezierEasing from "bezier-easing"
  *
  */
 export default class Cursor {
-  constructor(radius, initialDistanceFromOrbitCenter, gridSize) {
+  constructor(canvasWidth, canvasHeight, gridSize) {
     const initialRotationScalar = 3
 
+    const initialRadius = canvasWidth / 30
+    const initialDistanceFromOrbitCenter = canvasWidth / 4
+
+    this.canvasHeight = canvasHeight
+    this.canvasWidth = canvasWidth
     this.color = `rgb(185,211,176)`
     this.endPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
     this.distanceFromOrbitCenter = initialDistanceFromOrbitCenter
@@ -19,7 +24,9 @@ export default class Cursor {
       main: BezierEasing(1, 0.09, 0.55, 0.91),
     }
     this.initialDistanceFromOrbitCenter = initialDistanceFromOrbitCenter
+    this.initialRadius = initialRadius
     this.initialRotationScalar = initialRotationScalar
+    this.maxRadius = canvasWidth / 4
     this.orbitPoint = {
       x: -100,
       y: -100,
@@ -28,7 +35,7 @@ export default class Cursor {
       x: -100,
       y: -100,
     }
-    this.radius = radius
+    this.radius = initialRadius
     this.rotationScalar = initialRotationScalar
     this.startPointIndex = -1
 
@@ -54,7 +61,12 @@ export default class Cursor {
    * @param {*} lineCompletePercentage
    * @param {*} lineMvmtEaseFn
    */
-  getOrbitPoint(startPoint, endPoint, lineCompletePercentage, lineMvmtEaseFn) {
+  getPointAlongLine(
+    startPoint,
+    endPoint,
+    lineCompletePercentage,
+    lineMvmtEaseFn
+  ) {
     const [startX, startY] = startPoint
     const [endX, endY] = endPoint
     const x = lerp(startX, endX, lineMvmtEaseFn(lineCompletePercentage))
@@ -93,7 +105,7 @@ export default class Cursor {
    * @param {*} animation
    * @param {*} canvas
    */
-  updatePositionAlongLine(animator, grid) {
+  updatePositionAlongLine(animator, selectedPoint, grid) {
     const {
       currentTime,
       actionTime,
@@ -101,9 +113,7 @@ export default class Cursor {
       isLastLine,
       canvas,
     } = animator
-    const { options: gridOptions } = grid
-
-    console.log(isLastLine)
+    const lineMvmtEaseFn = this.getEasingFunction(isLastLine)
 
     // Determine how far the cursor is along the line
     const lineCompletePercentage = this.getLineCompletePercentage(
@@ -114,26 +124,49 @@ export default class Cursor {
 
     if (lineCompletePercentage <= 1) {
       const canvasCenter = [canvas.width / 2, canvas.height / 2]
-      const startPoint =
-        this.startPointIndex >= 0
-          ? gridOptions[this.startPointIndex].point
-          : canvasCenter
-      const endPoint = grid.options[this.endPointIndex].point
-      const lineMvmtEaseFn = this.getEasingFunction(isLastLine)
 
-      // Calculate orbit point
-      const [orbitX, orbitY] = this.getOrbitPoint(
-        startPoint,
-        endPoint,
-        lineCompletePercentage,
-        lineMvmtEaseFn
-      )
+      if (animator.travelAnimationDone) {
+        const canvasLowerMiddle = [canvas.width / 2, (canvas.height / 5) * 3]
+        const [newX, newY] = this.getPointAlongLine(
+          selectedPoint,
+          canvasLowerMiddle,
+          lineCompletePercentage,
+          lineMvmtEaseFn
+        )
+        this.point.x = newX
+        this.point.y = newY
+      } else {
+        const { options: gridOptions } = grid
 
-      // Calculate cursor point relative to it's rotation around the orbit point
-      const rotation = Math.PI * currentTime * this.rotationScalar
-      this.point.x = orbitX + this.distanceFromOrbitCenter * Math.sin(rotation)
-      this.point.y = orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
+        const startPoint =
+          this.startPointIndex >= 0
+            ? gridOptions[this.startPointIndex].point
+            : canvasCenter
+        const endPoint = grid.options[this.endPointIndex].point
+
+        // Calculate orbit point
+        const [orbitX, orbitY] = this.getPointAlongLine(
+          startPoint,
+          endPoint,
+          lineCompletePercentage,
+          lineMvmtEaseFn
+        )
+
+        // Calculate cursor point relative to it's rotation around the orbit point
+        const rotation = Math.PI * currentTime * this.rotationScalar
+        this.point.x =
+          orbitX + this.distanceFromOrbitCenter * Math.sin(rotation)
+        this.point.y =
+          orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
+      }
     } else {
+      if (
+        animator.travelAnimationDone &&
+        !animator.displaySelectedAnimationDone
+      ) {
+        animator.displaySelectedAnimationDone = true
+      }
+
       if (!animator.travelAnimationDone) {
         this.updateMvmtLine(animator, grid)
       }
@@ -145,24 +178,42 @@ export default class Cursor {
    *
    */
   updateSettings(animator) {
-    const { totalTime, currentTime } = animator
+    const {
+      currentTime,
+      totalSelectionAnimationTime,
+      totalDisplaySelectedAnimationTime,
+      travelAnimationDone,
+    } = animator
+
+    const totalAnimationTime = travelAnimationDone
+      ? totalDisplaySelectedAnimationTime
+      : totalSelectionAnimationTime
     // Determine the animation completion percentage
-    const animDonePerc = (totalTime + currentTime) / totalTime - 1
+    const animDonePerc =
+      (totalAnimationTime + currentTime) / totalAnimationTime - 1
     const mainEasingFn = this.easingFns.main
 
     // Gradually set rotation and distance from orbit center to 0
     if (animDonePerc <= 1) {
-      this.rotationScalar = lerp(
-        this.initialRotationScalar,
-        0,
-        mainEasingFn(animDonePerc)
-      )
+      if (travelAnimationDone) {
+        this.radius = lerp(
+          this.initialRadius,
+          this.maxRadius,
+          mainEasingFn(animDonePerc)
+        )
+      } else {
+        this.rotationScalar = lerp(
+          this.initialRotationScalar,
+          0,
+          mainEasingFn(animDonePerc)
+        )
 
-      this.distanceFromOrbitCenter = lerp(
-        this.initialDistanceFromOrbitCenter,
-        0,
-        mainEasingFn(animDonePerc)
-      )
+        this.distanceFromOrbitCenter = lerp(
+          this.initialDistanceFromOrbitCenter,
+          0,
+          mainEasingFn(animDonePerc)
+        )
+      }
     }
   }
 
@@ -175,11 +226,55 @@ export default class Cursor {
    */
   drawSelectionMovement(context, animator, grid) {
     this.updateSettings(animator)
-    this.updatePositionAlongLine(animator, grid)
+    this.updatePositionAlongLine(animator, null, grid)
 
     context.beginPath()
     context.fillStyle = this.color
     context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)
     context.fill()
+  }
+
+  drawDisplayedSelectedAnimation(
+    context,
+    animator,
+    selectedData,
+    selectedImage
+  ) {
+    const { point, color, foodOptionData } = selectedData
+    this.updateSettings(animator)
+    this.updatePositionAlongLine(animator, point)
+
+    context.beginPath()
+    context.fillStyle = color
+    context.strokeStyle = color
+    context.shadowColor = color
+    context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)
+    context.fill()
+
+    this.drawInfo(context, foodOptionData, selectedImage)
+  }
+
+  drawInfo(context, foodOptionData, selectedImage) {
+    context.save()
+
+    context.shadowBlur = 20
+    context.lineWidth = 10
+    context.stroke()
+    context.clip()
+
+    context.beginPath()
+    context.drawImage(
+      selectedImage,
+      this.point.x - this.radius,
+      this.point.y - this.radius,
+      this.radius * 2,
+      this.radius * 2 * (selectedImage.height / selectedImage.width)
+    )
+
+    context.restore()
+    const title = foodOptionData.name
+    context.font = `bold ${this.maxRadius / 4}px Arial`
+    context.textAlign = "center"
+    context.fillText(title, this.canvasWidth / 2, this.canvasHeight / 4)
   }
 }

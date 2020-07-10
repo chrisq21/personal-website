@@ -52,15 +52,16 @@ export default class Audio {
 
     // Synth setup
     const synth = new Tone.Synth({
-      oscillator: {
-        type: "sine",
-      },
       envelope: {
         attack: 0.001,
         decay: 0.5,
         sustain: 0.001,
         release: 5,
       },
+      oscillator: {
+        type: "sine",
+      },
+      volume: -10,
     }).connect(reverb)
 
     this.reverb = reverb

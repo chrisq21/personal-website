@@ -15,8 +15,10 @@ export default class Animator {
     this.lineTravelSpeed = lineTravelSpeed
     this.linesToTravel = linesToTravel
     this.startTime = null
-    this.totalTime = lineTravelSpeed * linesToTravel
+    this.totalDisplaySelectedAnimationTime = lineTravelSpeed
+    this.totalSelectionAnimationTime = lineTravelSpeed * linesToTravel
     this.travelAnimationDone = false
+    this.displaySelectedAnimationDone = false
 
     this.incrementLinesTraveled = this.incrementLinesTraveled.bind(this)
   }
