@@ -257,21 +257,38 @@ export default class Cursor {
   drawInfo(context, foodOptionData, selectedImage) {
     context.save()
 
-    context.shadowBlur = 20
+    context.shadowBlur = 30
     context.lineWidth = 10
     context.stroke()
-    context.clip()
 
+    const { width, height } = selectedImage
+    const aspectRatio = width / height
+    const diameter = this.radius * 2
+    // Make sure the image covers the entire arc
+    const heightIsSmaller = height < width
+    const newHeight = heightIsSmaller ? diameter : diameter / aspectRatio
+    const newWidth = heightIsSmaller ? diameter * aspectRatio : diameter
+    // Center the image
+    const sizeDiff = heightIsSmaller
+      ? newWidth - diameter
+      : newHeight - diameter
+    const imageX = this.point.x - this.radius
+    const imageY = this.point.y - this.radius
+    const newImageX = heightIsSmaller ? imageX - sizeDiff / 2 : imageX
+    const newImageY = heightIsSmaller ? imageY : imageY - sizeDiff / 2
+    // Clip the arc around the image and draw
+    context.clip()
     context.beginPath()
     context.drawImage(
       selectedImage,
-      this.point.x - this.radius,
-      this.point.y - this.radius,
-      this.radius * 2,
-      this.radius * 2 * (selectedImage.height / selectedImage.width)
+      newImageX,
+      newImageY,
+      heightIsSmaller ? newWidth : diameter,
+      heightIsSmaller ? diameter : newHeight
     )
-
     context.restore()
+
+    //draw text
     const title = foodOptionData.name
     context.font = `bold ${this.maxRadius / 4}px Arial`
     context.textAlign = "center"

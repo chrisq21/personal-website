@@ -26,7 +26,7 @@ export default class Grid {
       maxAlpha: 0.4,
       radiusAddition: canvasWidth / 60,
       recentlyAnimatedIndex: null,
-      totalTime: 1.5,
+      totalTime: 1.25,
     }
     this.selectedEaseFn = BezierEasing(0.96, 0.25, 0.54, 0.88)
     this.selectedMvmtSpeed = 0.5
@@ -126,9 +126,13 @@ export default class Grid {
       }
 
       const [x, y] = foodOptionData.point
+      context.save()
       context.beginPath()
+      context.shadowColor = color
+      context.shadowBlur = 5
       context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
       context.fill()
+      context.restore()
     })
 
     this.checkCollisions(cursor, animator)
