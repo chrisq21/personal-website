@@ -9,9 +9,10 @@ import BezierEasing from "bezier-easing"
 export default class Cursor {
   constructor(canvasWidth, canvasHeight, gridSize) {
     const initialRotationScalar = 3
-
     const initialRadius = canvasWidth / 30
     const initialDistanceFromOrbitCenter = canvasWidth / 4
+    const lineTravelSpeed = 1.2
+    const linesToTravel = 5
 
     this.canvasHeight = canvasHeight
     this.canvasWidth = canvasWidth
@@ -39,7 +40,17 @@ export default class Cursor {
     this.rotationScalar = initialRotationScalar
     this.startPointIndex = -1
 
-    this.drawSelectionMovement = this.drawSelectionMovement.bind(this)
+    // animation settings
+    this.foundAnimationDone = false
+    this.isLastLine = false
+    this.lineTravelSpeed = lineTravelSpeed
+    this.linesTraveled = 0
+    this.linesToTravel = linesToTravel
+    this.totalFoundAnimationTime = lineTravelSpeed
+    this.totalSearchingAnimationTime = lineTravelSpeed * linesToTravel
+    this.searchingAnimationDone = false
+
+    this.drawSearchingAnimation = this.drawSearchingAnimation.bind(this)
   }
 
   // TODO document
@@ -79,10 +90,9 @@ export default class Cursor {
    *
    * @param {*} currentTime
    * @param {*} actionTime
-   * @param {*} lineTravelSpeed
    */
-  getLineCompletePercentage(currentTime, actionTime, lineTravelSpeed) {
-    return (currentTime - actionTime) / lineTravelSpeed
+  getLineCompletePercentage(currentTime, actionTime) {
+    return (currentTime - actionTime) / this.lineTravelSpeed
   }
 
   // TODO add docs
@@ -94,7 +104,16 @@ export default class Cursor {
     this.startPointIndex = this.endPointIndex
     this.endPointIndex = random.rangeFloor(0, grid.size * grid.size - 1)
 
-    animator.incrementLinesTraveled()
+    animator.updateActionTime()
+    // Increment linesTraveled and check to see if we're done
+    this.linesTraveled = this.linesTraveled + 1
+    if (this.linesTraveled === this.linesToTravel - 1) {
+      this.isLastLine = true
+    }
+    if (this.linesTraveled >= this.linesToTravel) {
+      this.searchingAnimationDone = true
+    }
+    console.log(this.isLastLine)
   }
 
   // TODO add docs
@@ -106,26 +125,19 @@ export default class Cursor {
    * @param {*} canvas
    */
   updatePositionAlongLine(animator, selectedPoint, grid) {
-    const {
-      currentTime,
-      actionTime,
-      lineTravelSpeed,
-      isLastLine,
-      canvas,
-    } = animator
-    const lineMvmtEaseFn = this.getEasingFunction(isLastLine)
+    const { currentTime, actionTime, canvas } = animator
+    const lineMvmtEaseFn = this.getEasingFunction(this.isLastLine)
 
     // Determine how far the cursor is along the line
     const lineCompletePercentage = this.getLineCompletePercentage(
       currentTime,
-      actionTime,
-      lineTravelSpeed
+      actionTime
     )
 
     if (lineCompletePercentage <= 1) {
       const canvasCenter = [canvas.width / 2, canvas.height / 2]
 
-      if (animator.travelAnimationDone) {
+      if (this.searchingAnimationDone) {
         const canvasLowerMiddle = [canvas.width / 2, (canvas.height / 5) * 3]
         const [newX, newY] = this.getPointAlongLine(
           selectedPoint,
@@ -160,14 +172,11 @@ export default class Cursor {
           orbitY + this.distanceFromOrbitCenter * Math.cos(rotation)
       }
     } else {
-      if (
-        animator.travelAnimationDone &&
-        !animator.displaySelectedAnimationDone
-      ) {
-        animator.displaySelectedAnimationDone = true
+      if (this.searchingAnimationDone && !this.foundAnimationDone) {
+        this.foundAnimationDone = true
       }
 
-      if (!animator.travelAnimationDone) {
+      if (!this.searchingAnimationDone) {
         this.updateMvmtLine(animator, grid)
       }
     }
@@ -178,16 +187,12 @@ export default class Cursor {
    *
    */
   updateSettings(animator) {
-    const {
-      currentTime,
-      totalSelectionAnimationTime,
-      totalDisplaySelectedAnimationTime,
-      travelAnimationDone,
-    } = animator
+    const { currentTime, searchingAnimationDone } = animator
 
-    const totalAnimationTime = travelAnimationDone
-      ? totalDisplaySelectedAnimationTime
-      : totalSelectionAnimationTime
+    const totalAnimationTime = searchingAnimationDone
+      ? this.totalFoundAnimationTime
+      : this.totalSearchingAnimationTime
+
     // Determine the animation completion percentage
     const animDonePerc =
       (totalAnimationTime + currentTime) / totalAnimationTime - 1
@@ -195,7 +200,7 @@ export default class Cursor {
 
     // Gradually set rotation and distance from orbit center to 0
     if (animDonePerc <= 1) {
-      if (travelAnimationDone) {
+      if (searchingAnimationDone) {
         this.radius = lerp(
           this.initialRadius,
           this.maxRadius,
@@ -224,7 +229,7 @@ export default class Cursor {
    * @param {*} animator
    * @param {*} grid
    */
-  drawSelectionMovement(context, animator, grid) {
+  drawSearchingAnimation(context, animator, grid) {
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, null, grid)
 
@@ -234,12 +239,7 @@ export default class Cursor {
     context.fill()
   }
 
-  drawDisplayedSelectedAnimation(
-    context,
-    animator,
-    selectedData,
-    selectedImage
-  ) {
+  drawFoundAnimation(context, animator, selectedData, selectedImage) {
     const { point, color, foodData } = selectedData
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, point)

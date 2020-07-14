@@ -52,7 +52,7 @@ const FoodRoulettePage = ({ data }) => {
             data["dinner"].edges,
             setSelectedFoodOption
           )
-          animation.startSelectionAnimation()
+          animation.startSearchingAnimation()
         }}
       >
         Start Selection
