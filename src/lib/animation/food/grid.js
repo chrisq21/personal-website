@@ -10,7 +10,7 @@ export default class Grid {
   constructor(canvasWidth, canvasHeight, foodArray, foodImages) {
     this.easeFn = BezierEasing(0.7, 0.01, 0, 0.49)
     this.margin = canvasWidth / 5
-    this.orbRadius = canvasWidth / 25
+    this.orbRadius = canvasWidth / 20
     this.palette = [
       `rgb(185,211,176)`,
       `rgb(129,189,164)`,
@@ -24,7 +24,7 @@ export default class Grid {
       count: 4,
       easeFn: BezierEasing(0.29, 0.81, 0.77, 0.95),
       maxAlpha: 0.4,
-      radiusAddition: canvasWidth / 60,
+      radiusAddition: canvasWidth / 65,
       recentlyAnimatedIndex: null,
       totalTime: 1.25,
     }
