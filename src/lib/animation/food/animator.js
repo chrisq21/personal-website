@@ -17,6 +17,8 @@ export default class Animator {
     this.startTime = null
     this.totalDisplaySelectedAnimationTime = lineTravelSpeed
     this.totalSelectionAnimationTime = lineTravelSpeed * linesToTravel
+
+    this.idleAnimationActive = false
     this.travelAnimationDone = false
     this.displaySelectedAnimationDone = false
 
@@ -52,25 +54,6 @@ export default class Animator {
     }
     this.currentTime = (elapsedTime - this.startTime) / 1000
   }
-
-  startWaitingAnimation() {}
-
-  // TODO document
-  /**
-   *
-   * @param {*} canvas
-   * @param {*} context
-   * @param {*} grid
-   * @param {*} cursor
-   */
-  startSelectionAnimation(canvas, context, grid, cursor) {
-    // Draw
-    window.requestAnimationFrame(
-      this.drawSelectionAnimation.bind(this, canvas, context, grid, cursor)
-    )
-  }
-
-  startInfoAnimation() {}
 
   // TODO document
   /**

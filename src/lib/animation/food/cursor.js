@@ -240,7 +240,7 @@ export default class Cursor {
     selectedData,
     selectedImage
   ) {
-    const { point, color, foodOptionData } = selectedData
+    const { point, color, foodData } = selectedData
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, point)
 
@@ -251,10 +251,10 @@ export default class Cursor {
     context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)
     context.fill()
 
-    this.drawInfo(context, foodOptionData, selectedImage)
+    this.drawInfo(context, foodData, selectedImage)
   }
 
-  drawInfo(context, foodOptionData, selectedImage) {
+  drawInfo(context, foodData, selectedImage) {
     context.save()
 
     context.shadowBlur = 30
@@ -289,7 +289,7 @@ export default class Cursor {
     context.restore()
 
     //draw text
-    const title = foodOptionData.name
+    const title = foodData.name
     context.font = `bold ${this.maxRadius / 4}px Arial`
     context.textAlign = "center"
     context.fillText(title, this.canvasWidth / 2, this.canvasHeight / 4)

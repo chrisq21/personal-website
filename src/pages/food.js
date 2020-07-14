@@ -3,7 +3,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { graphql } from "gatsby"
 // import { showCanvas, startAnimation } from "../lib/animation/food/index.js"
-import { startAnimation } from "../lib/animation/food/index.js"
+import FoodAnimation from "../lib/animation/food/index.js"
 
 const FoodRoulettePage = ({ data }) => {
   const [selectedFoodOption, setSelectedFoodOption] = useState(null)
@@ -38,34 +38,25 @@ const FoodRoulettePage = ({ data }) => {
     }
   }, [selectedFoodOption])
 
-  const start = () => {
-    startAnimation(data["dinner"].edges, setSelectedFoodOption)
-  }
-
   console.log("selectedFoodOption: ", selectedFoodOption)
   // TODO Move markup to components in the components folder
   return (
     <Layout>
       <SEO title="Food Roulette" />
-      {/* <h1>Food</h1>
-      <p>Spin the wheel. Eat food.</p>
-      <select value={foodType} onChange={handleChange}>
-        <option value="dinner">Dinner</option>
-        <option value="lunch">Lunch</option>
-        <option value="breakfast">Breakfast</option>
-      </select>
-      <p>
-        [WARNING⚠️] You have no other choice. You must eat where the wheel
-        chooses.
-      </p>
-      {selectedFoodOption && (
-        <>
-          <h2>{selectedFoodOption.name} it is!</h2>
-          <p>There is no turning back now.</p>
-        </>
-      )}
-      <button onClick={spin}>SPIN</button> */}
-      <button onClick={start}>Start</button>
+
+      <button>Start Idle</button>
+
+      <button
+        onClick={() => {
+          const animation = new FoodAnimation(
+            data["dinner"].edges,
+            setSelectedFoodOption
+          )
+          animation.startSelectionAnimation()
+        }}
+      >
+        Start Selection
+      </button>
 
       <div
         id="canvas-wrapper"

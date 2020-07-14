@@ -7,7 +7,7 @@ import BezierEasing from "bezier-easing"
  *
  */
 export default class Grid {
-  constructor(canvasWidth, canvasHeight, foodArray) {
+  constructor(canvasWidth, canvasHeight, foodArray, foodImages) {
     this.easeFn = BezierEasing(0.7, 0.01, 0, 0.49)
     this.margin = canvasWidth / 5
     this.orbRadius = canvasWidth / 25
@@ -32,7 +32,12 @@ export default class Grid {
     this.selectedMvmtSpeed = 0.5
     this.size = 4 // total size = grid.size x grid.size
 
-    this.options = this.getOptions(canvasWidth, canvasHeight, foodArray)
+    this.options = this.getOptions(
+      canvasWidth,
+      canvasHeight,
+      foodArray,
+      foodImages
+    )
   }
 
   // TODO document
@@ -42,7 +47,7 @@ export default class Grid {
    * @param {*} canvasHeight
    * @param {*} foodArray
    */
-  getOptions(canvasWidth, canvasHeight, foodArray) {
+  getOptions(canvasWidth, canvasHeight, foodArray, foodImages) {
     const options = []
     const shuffledFoodArray = random.shuffle(foodArray)
     let counter = 0
@@ -53,12 +58,15 @@ export default class Grid {
         const v = j / (this.size - 1)
         const y = lerp(this.margin, canvasHeight - this.margin, v)
         const index = counter % shuffledFoodArray.length
-        const foodOptionData = shuffledFoodArray[index].node
+        const foodData = shuffledFoodArray[index].node
+        const color = this.palette[index % this.palette.length]
+
         options.push({
           point: [x, y],
           shouldAnimate: false,
-          animationStartTime: 0,
-          foodOptionData,
+          foodData,
+          color,
+          // image: foodImages[index],
         })
         counter++
       }
@@ -104,12 +112,78 @@ export default class Grid {
    * @param {*} cursor
    */
   draw(context, animator, cursor, audio) {
-    this.options.forEach((foodOptionData, index) => {
-      const color = this.palette[index % this.palette.length]
-      this.options[index].color = color
-      context.fillStyle = color
+    this.drawGrid(context)
+    this.checkCollisions(cursor, animator)
+    this.drawOrbRipples(context, animator, audio)
+  }
 
-      if (foodOptionData.shouldAnimate) {
+  // TODO add images
+  drawGrid(context) {
+    this.options.forEach(({ color, point }) => {
+      context.save()
+
+      const [x, y] = point
+      // this.drawImage(context, image, point)
+      context.fillStyle = color
+      context.strokeStyle = color
+      context.shadowColor = color
+      // draw grid orb with low opacity over image
+      context.globalAlpha = 0.7
+      context.beginPath()
+      context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
+      context.fill()
+
+      context.restore()
+    })
+  }
+
+  drawImage(context, image, point, color) {
+    context.save()
+
+    const [x, y] = point
+    const { width, height } = image
+    const aspectRatio = width / height
+    const diameter = this.orbRadius * 2
+    // Make sure the image covers the entire arc
+    const heightIsSmaller = height < width
+    const newHeight = heightIsSmaller ? diameter : diameter / aspectRatio
+    const newWidth = heightIsSmaller ? diameter * aspectRatio : diameter
+    // Center the image
+    const sizeDiff = heightIsSmaller
+      ? newWidth - diameter
+      : newHeight - diameter
+    const imageX = x - this.orbRadius
+    const imageY = y - this.orbRadius
+    const newImageX = heightIsSmaller ? imageX - sizeDiff / 2 : imageX
+    const newImageY = heightIsSmaller ? imageY : imageY - sizeDiff / 2
+
+    // draw clipping path
+    context.beginPath()
+    context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
+    context.clip()
+
+    context.imageSmoothingEnabled = true
+    // draw image
+    context.drawImage(
+      image,
+      newImageX,
+      newImageY,
+      heightIsSmaller ? newWidth : diameter,
+      heightIsSmaller ? diameter : newHeight
+    )
+    context.restore()
+  }
+
+  // TODO document
+  /**
+   *
+   * @param {*} context
+   * @param {*} animator
+   */
+  drawOrbRipples(context, animator, audio) {
+    this.options.forEach((gridOptionData, index) => {
+      const { shouldAnimate, color } = gridOptionData
+      if (shouldAnimate) {
         // Queue up ripple animation
         this.options[index].shouldAnimate = false
         this.ripple.animations.push({
@@ -124,28 +198,8 @@ export default class Grid {
         const note = audio.gridNotes[index]
         audio.playNote(note)
       }
-
-      const [x, y] = foodOptionData.point
-      context.save()
-      context.beginPath()
-      context.shadowColor = color
-      context.shadowBlur = 5
-      context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
-      context.fill()
-      context.restore()
     })
 
-    this.checkCollisions(cursor, animator)
-    this.drawOrbRipples(context, animator)
-  }
-
-  // TODO document
-  /**
-   *
-   * @param {*} context
-   * @param {*} animator
-   */
-  drawOrbRipples(context, animator) {
     this.ripple.animations.forEach((rippleAnimation, index) => {
       const {
         gridIndex,
