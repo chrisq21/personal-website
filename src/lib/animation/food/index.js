@@ -12,15 +12,30 @@ export default class Animator {
     this.context = context
     this.canvas = canvas
 
-    // Object instances
-    this.grid = new Grid(canvas.width, canvas.height, foodOptions)
-    this.cursor = new Cursor(canvas.width, canvas.height, this.grid.size)
-    this.audio = new Audio()
-
     // animation timing
     this.actionTime = null
     this.currentTime = null
     this.startTime = null
+
+    this.fetchImages(foodOptions)
+
+    // Object instances
+    this.grid = new Grid(
+      canvas.width,
+      canvas.height,
+      foodOptions,
+      this.foodImages
+    )
+    this.cursor = new Cursor(canvas.width, canvas.height, this.grid.size)
+    this.audio = new Audio()
+  }
+
+  fetchImages(foodOptions) {
+    this.foodImages = foodOptions.map(({ node }) => {
+      const image = new Image()
+      image.src = node.image_url
+      return image
+    })
   }
 
   clearCanvas() {
@@ -99,69 +114,3 @@ export default class Animator {
     }
   }
 }
-
-// TODO document
-/**
- *
- * @param {*} foodOptions
- * @param {*} setSelectedFoodOption
- */
-
-// //  TODO document
-// /**
-//  *
-//  * @param {*} foodOptions
-//  */
-// const fetchImages = foodOptions => {
-//   foodImages = foodOptions.map(({ node }) => {
-//     const image = new Image()
-//     image.src = node.image_url
-//     return image
-//   })
-// }
-
-// export const startIdleAnimation = foodOptions => {
-//   if (document && window) {
-//     const canvas = document.getElementById("#food-canvas")
-//     const context = canvas.getContext("2d")
-//     const animator = new Animator(canvas)
-//     animator.idleAnimationActive = true
-//     // TODO wait for images to load before starting
-//     if (foodImages.length <= 0) fetchImages(foodOptions)
-
-//     const grid = new Grid(canvas.width, canvas.height, foodOptions, foodImages)
-//     const cursor = new Cursor(canvas.width, canvas.height, grid.size)
-//     const audio = new Audio()
-//     setTimeout(() => {
-//       window.requestAnimationFrame(
-//         drawIdleAnimation.bind(
-//           null,
-//           canvas,
-//           context,
-//           animator,
-//           cursor,
-//           grid,
-//           audio
-//         )
-//       )
-//     }, 1000)
-
-//     // TODO draw cursor orbiting whole grid
-//   }
-// }
-
-// export const drawIdleAnimation = (
-//   canvas,
-//   context,
-//   animator,
-//   cursor,
-//   grid,
-//   elapsedTime
-// ) => {
-//   grid.drawGrid(context, animator, cursor)
-//   if (animator.idleAnimationActive) {
-//     window.requestAnimationFrame(
-//       drawIdleAnimation.bind(null, canvas, context, animator, cursor, grid)
-//     )
-//   }
-// }

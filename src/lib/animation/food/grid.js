@@ -66,7 +66,7 @@ export default class Grid {
           shouldAnimate: false,
           foodData,
           color,
-          // image: foodImages[index],
+          image: foodImages[index],
         })
         counter++
       }
@@ -119,16 +119,16 @@ export default class Grid {
 
   // TODO add images
   drawGrid(context) {
-    this.options.forEach(({ color, point }) => {
+    this.options.forEach(({ color, point, image }) => {
       context.save()
 
       const [x, y] = point
-      // this.drawImage(context, image, point)
+      this.drawImage(context, image, point)
       context.fillStyle = color
       context.strokeStyle = color
       context.shadowColor = color
       // draw grid orb with low opacity over image
-      context.globalAlpha = 0.7
+      context.globalAlpha = 0.8
       context.beginPath()
       context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
       context.fill()

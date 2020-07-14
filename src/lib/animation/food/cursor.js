@@ -187,9 +187,9 @@ export default class Cursor {
    *
    */
   updateSettings(animator) {
-    const { currentTime, searchingAnimationDone } = animator
+    const { currentTime } = animator
 
-    const totalAnimationTime = searchingAnimationDone
+    const totalAnimationTime = this.searchingAnimationDone
       ? this.totalFoundAnimationTime
       : this.totalSearchingAnimationTime
 
@@ -200,7 +200,7 @@ export default class Cursor {
 
     // Gradually set rotation and distance from orbit center to 0
     if (animDonePerc <= 1) {
-      if (searchingAnimationDone) {
+      if (this.searchingAnimationDone) {
         this.radius = lerp(
           this.initialRadius,
           this.maxRadius,
