@@ -290,7 +290,10 @@ export default class Cursor {
 
     //draw text
     const title = foodData.name
-    context.font = `bold ${this.maxRadius / 4}px Arial`
+    context.font = `bold ${
+      this.maxRadius / 4
+    }px -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif`
     context.textAlign = "center"
     context.fillText(title, this.canvasWidth / 2, this.canvasHeight / 4)
   }

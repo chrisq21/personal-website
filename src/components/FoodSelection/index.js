@@ -17,9 +17,12 @@ const Overlay = styled.div`
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: black;
-  border-radius: 5%;
-  transition: 1s opacity ease;
+  border-radius: 50px;
+  transition: 1.5s opacity ease;
   cursor: pointer;
   opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.75`)};
 
@@ -31,6 +34,12 @@ const Overlay = styled.div`
     height: ${canvasSize}px;
     width: ${canvasSize}px;
   `}
+`
+
+const Text = styled.span`
+  color: white;
+  font-weight: bold;
+  font-size: 2rem;
 `
 
 const Canvas = styled.canvas`
@@ -51,7 +60,7 @@ const FoodSelection = ({ foodOptions }) => {
     setCanvasSize(Math.min(wrapperWidth, wrapperHeight))
   }, [])
 
-  /* Once the canvas has proper dimensions, load the animation */
+  /* Once the canvas has proper dimensions, display the grid */
   useEffect(() => {
     if (canvasSize) {
       const animation = new FoodAnimation(foodOptions)
@@ -80,7 +89,9 @@ const FoodSelection = ({ foodOptions }) => {
             canvasSize={canvasSize}
             onClick={handleStartAnimationClick}
             isAnimationActive={isAnimationActive}
-          />
+          >
+            <Text>Start</Text>
+          </Overlay>
         </CanvasWrapper>
       )}
     </Wrapper>
