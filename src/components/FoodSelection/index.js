@@ -22,12 +22,12 @@ const Overlay = styled.div`
   align-items: center;
   background: black;
   border-radius: 50px;
-  transition: 1.5s opacity ease;
+  transition: 500ms opacity ease;
   cursor: pointer;
-  opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.75`)};
+  opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.9`)};
 
   &:hover {
-    opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.4`)};
+    opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.8`)};
   }
 
   ${({ canvasSize }) => `
@@ -90,7 +90,7 @@ const FoodSelection = ({ foodOptions }) => {
             onClick={handleStartAnimationClick}
             isAnimationActive={isAnimationActive}
           >
-            <Text>Start</Text>
+            <Text>START!</Text>
           </Overlay>
         </CanvasWrapper>
       )}
