@@ -28,6 +28,8 @@ export default class Animator {
     )
     this.cursor = new Cursor(canvas.width, canvas.height, this.grid.size)
     this.audio = new Audio()
+
+    this.startSearchingAnimation = this.startSearchingAnimation.bind(this)
   }
 
   fetchImages(foodOptions) {
@@ -53,6 +55,10 @@ export default class Animator {
 
   updateActionTime() {
     this.actionTime = this.currentTime
+  }
+
+  showGrid() {
+    this.grid.drawGrid(this.context)
   }
 
   startSearchingAnimation() {

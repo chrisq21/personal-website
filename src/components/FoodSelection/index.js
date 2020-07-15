@@ -15,6 +15,7 @@ const Canvas = styled.canvas`
 
 const FoodSelection = ({ foodOptions }) => {
   const [canvasSize, setCanvasSize] = useState(null)
+  const [animationInstance, setAnimationInstance] = useState(null)
 
   /* Once the DOM loads, set the canvas dimensions to the min between container height and container width. */
   useLayoutEffect(() => {
@@ -28,12 +29,18 @@ const FoodSelection = ({ foodOptions }) => {
   useEffect(() => {
     if (canvasSize) {
       const animation = new FoodAnimation(foodOptions)
-      animation.startSearchingAnimation()
+      animation.showGrid()
+      setAnimationInstance(animation)
     }
   }, [canvasSize])
 
   return (
     <Wrapper>
+      {animationInstance && (
+        <button onClick={animationInstance.startSearchingAnimation}>
+          Start
+        </button>
+      )}
       {!!canvasSize && (
         <Canvas
           width={canvasSize}
