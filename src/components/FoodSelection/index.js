@@ -8,6 +8,31 @@ const Wrapper = styled.div`
   width: 100%;
 `
 
+const CanvasWrapper = styled.div`
+  position: relative;
+`
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background: black;
+  border-radius: 5%;
+  transition: 1s opacity ease;
+  cursor: pointer;
+  opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.75`)};
+
+  &:hover {
+    opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.4`)};
+  }
+
+  ${({ canvasSize }) => `
+    height: ${canvasSize}px;
+    width: ${canvasSize}px;
+  `}
+`
+
 const Canvas = styled.canvas`
   display: block;
   margin: 0 auto;
@@ -16,6 +41,7 @@ const Canvas = styled.canvas`
 const FoodSelection = ({ foodOptions }) => {
   const [canvasSize, setCanvasSize] = useState(null)
   const [animationInstance, setAnimationInstance] = useState(null)
+  const [isAnimationActive, setIsAnimationActive] = useState(false)
 
   /* Once the DOM loads, set the canvas dimensions to the min between container height and container width. */
   useLayoutEffect(() => {
@@ -34,19 +60,28 @@ const FoodSelection = ({ foodOptions }) => {
     }
   }, [canvasSize])
 
+  const handleStartAnimationClick = () => {
+    if (animationInstance && !isAnimationActive) {
+      animationInstance.startSearchingAnimation()
+      setIsAnimationActive(true)
+    }
+  }
+
   return (
     <Wrapper>
-      {animationInstance && (
-        <button onClick={animationInstance.startSearchingAnimation}>
-          Start
-        </button>
-      )}
       {!!canvasSize && (
-        <Canvas
-          width={canvasSize}
-          height={canvasSize}
-          id="#food-canvas"
-        ></Canvas>
+        <CanvasWrapper>
+          <Canvas
+            width={canvasSize}
+            height={canvasSize}
+            id="#food-canvas"
+          ></Canvas>
+          <Overlay
+            canvasSize={canvasSize}
+            onClick={handleStartAnimationClick}
+            isAnimationActive={isAnimationActive}
+          />
+        </CanvasWrapper>
       )}
     </Wrapper>
   )
