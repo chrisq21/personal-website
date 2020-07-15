@@ -3,14 +3,15 @@ import Cursor from "./cursor"
 import Grid from "./grid"
 
 export default class Animator {
-  constructor(foodOptions) {
+  constructor(foodOptions, setSelectedFood) {
     const canvas = document.getElementById("#food-canvas")
     const context = canvas.getContext("2d")
 
+    this.canvas = canvas
+    this.context = context
     this.foodImages = []
     this.foodOptions = foodOptions
-    this.context = context
-    this.canvas = canvas
+    this.setSelectedFood = setSelectedFood
 
     // animation timing
     this.actionTime = null
@@ -65,16 +66,16 @@ export default class Animator {
     window.requestAnimationFrame(this.drawSearchingAnimation.bind(this))
   }
 
-  startFoundAnimation(selectedData, elapsedTime) {
+  startFoundAnimation(selectedFood, elapsedTime) {
     // start loading selected image
     const selectedImage = new Image()
-    selectedImage.src = selectedData.foodData.image_url
+    selectedImage.src = selectedFood.foodData.image_url
     // start the "Display Selected" animation
     this.startTime = null
     this.setCurrentTime(elapsedTime)
     this.updateActionTime()
     window.requestAnimationFrame(
-      this.drawFoundAnimation.bind(this, selectedData, selectedImage)
+      this.drawFoundAnimation.bind(this, selectedFood, selectedImage)
     )
   }
 
@@ -94,29 +95,30 @@ export default class Animator {
     this.cursor.drawSearchingAnimation(this.context, this, this.grid)
 
     if (this.cursor.searchingAnimationDone) {
-      const selectedData = this.grid.options[this.cursor.startPointIndex]
-      this.startFoundAnimation(selectedData, elapsedTime)
+      const selectedFood = this.grid.options[this.cursor.startPointIndex]
+      this.startFoundAnimation(selectedFood, elapsedTime)
     } else {
       window.requestAnimationFrame(this.drawSearchingAnimation.bind(this))
     }
   }
 
-  drawFoundAnimation(selectedData, selectedImage, elapsedTime) {
+  drawFoundAnimation(selectedFood, selectedImage, elapsedTime) {
     this.updateDrawSettings(elapsedTime)
 
     this.cursor.drawFoundAnimation(
       this.context,
       this,
-      selectedData,
+      selectedFood,
       selectedImage
     )
 
     if (!this.cursor.foundAnimationDone) {
       window.requestAnimationFrame(
-        this.drawFoundAnimation.bind(this, selectedData, selectedImage)
+        this.drawFoundAnimation.bind(this, selectedFood, selectedImage)
       )
     } else {
       console.log("DONE WITH DISPLAY ANIMATION")
+      this.setSelectedFood(selectedFood)
     }
   }
 }
