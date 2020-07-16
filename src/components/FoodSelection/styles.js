@@ -21,10 +21,10 @@ export const Overlay = styled.div`
   background: black;
   transition: 500ms opacity ease;
   cursor: pointer;
-  opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.8`)};
+  opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.9`)};
 
   &:hover {
-    opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.5`)};
+    opacity: ${({ isAnimationActive }) => (isAnimationActive ? `0` : `0.7`)};
   }
 
   ${({ canvasSize }) => `

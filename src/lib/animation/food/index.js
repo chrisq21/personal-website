@@ -50,7 +50,7 @@ export default class Animator {
     if (this.startTime === null) {
       this.startTime = elapsedTime
     }
-    // calculate global time in seconds
+    // Calculate time in seconds
     this.currentTime = (elapsedTime - this.startTime) / 1000
   }
 
@@ -67,10 +67,8 @@ export default class Animator {
   }
 
   startFoundAnimation(selectedFood, elapsedTime) {
-    // start loading selected image
     const selectedImage = new Image()
     selectedImage.src = selectedFood.foodData.image_url
-    // start the "Display Selected" animation
     this.startTime = null
     this.setCurrentTime(elapsedTime)
     this.updateActionTime()
@@ -89,8 +87,6 @@ export default class Animator {
 
   drawSearchingAnimation(elapsedTime) {
     this.updateDrawSettings(elapsedTime)
-
-    // draw
     this.grid.draw(this.context, this, this.cursor, this.audio)
     this.cursor.drawSearchingAnimation(this.context, this, this.grid)
 
@@ -104,7 +100,6 @@ export default class Animator {
 
   drawFoundAnimation(selectedFood, selectedImage, elapsedTime) {
     this.updateDrawSettings(elapsedTime)
-
     this.cursor.drawFoundAnimation(
       this.context,
       this,

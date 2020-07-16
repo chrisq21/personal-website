@@ -8,7 +8,6 @@ import {
   Text,
   Canvas,
 } from "./styles"
-import styled from "styled-components"
 
 const FoodSelection = ({ foodOptions }) => {
   const [canvasSize, setCanvasSize] = useState(null)
@@ -33,12 +32,6 @@ const FoodSelection = ({ foodOptions }) => {
     }
   }, [canvasSize])
 
-  useEffect(() => {
-    if (selectedFood) {
-      console.log(selectedFood)
-    }
-  }, [selectedFood])
-
   const handleCanvasOverlayClick = () => {
     if (animationInstance && !isAnimationActive) {
       animationInstance.startSearchingAnimation()
@@ -61,7 +54,7 @@ const FoodSelection = ({ foodOptions }) => {
             isAnimationActive={isAnimationActive}
           >
             {selectedFood && <CanvasLink href={selectedFood.foodData.url} />}
-            <Text>Find me some food!</Text>
+            <Text>Find me food!</Text>
           </Overlay>
         </CanvasWrapper>
       )}

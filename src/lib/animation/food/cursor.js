@@ -8,26 +8,39 @@ import BezierEasing from "bezier-easing"
  */
 export default class Cursor {
   constructor(canvasWidth, canvasHeight, gridSize) {
-    const initialRotationScalar = 3
-    const initialRadius = canvasWidth / 30
-    const initialDistanceFromOrbitCenter = canvasWidth / 4
-    const lineTravelSpeed = 1.2
-    const linesToTravel = 5
-
+    // canvas + grid settings
     this.canvasHeight = canvasHeight
     this.canvasWidth = canvasWidth
-    this.color = `rgb(185,211,176)`
-    this.endPointIndex = random.rangeFloor(0, gridSize * gridSize - 1)
-    this.distanceFromOrbitCenter = initialDistanceFromOrbitCenter
-    this.easingFns = {
-      mainLineMvmt: BezierEasing(0.76, 0.02, 0.73, 0.93),
-      lastLineMvmt: BezierEasing(0.7, 0.01, 0, 0.49),
-      main: BezierEasing(1, 0.09, 0.55, 0.91),
-    }
-    this.initialDistanceFromOrbitCenter = initialDistanceFromOrbitCenter
-    this.initialRadius = initialRadius
-    this.initialRotationScalar = initialRotationScalar
+    this.gridSize = gridSize
+    // initial settings
+    this.initialRotationScalar = 2.5
+    this.initialRadius = canvasWidth / 30
+    this.initialDistanceFromOrbitCenter = canvasWidth / 3.5
     this.maxRadius = canvasWidth / 4
+    // animation settings
+    this.easingFns = {
+      lineMvmt: BezierEasing(0.76, 0.02, 0.73, 0.93),
+      lastLineMvmt: BezierEasing(0.7, 0.01, 0, 0.49),
+      settings: BezierEasing(0.62, 0.53, 0.8, 0.03),
+    }
+    this.lineTravelSpeed = 1
+    this.linesToTravel = 5
+    this.totalFoundAnimationTime = this.lineTravelSpeed
+    this.totalSearchingAnimationTime = this.lineTravelSpeed * this.linesToTravel
+
+    this.drawSearchingAnimation = this.drawSearchingAnimation.bind(this)
+    this.reset()
+  }
+
+  reset() {
+    // initial settings
+    this.distanceFromOrbitCenter = this.initialDistanceFromOrbitCenter
+    this.radius = this.initialRadius
+    this.rotationScalar = this.initialRotationScalar
+    // search settings
+    this.linesTraveled = 0
+    this.startPointIndex = -1
+    this.endPointIndex = random.rangeFloor(0, this.gridSize * this.gridSize - 1)
     this.orbitPoint = {
       x: -100,
       y: -100,
@@ -36,21 +49,10 @@ export default class Cursor {
       x: -100,
       y: -100,
     }
-    this.radius = initialRadius
-    this.rotationScalar = initialRotationScalar
-    this.startPointIndex = -1
-
     // animation settings
     this.foundAnimationDone = false
     this.isLastLine = false
-    this.lineTravelSpeed = lineTravelSpeed
-    this.linesTraveled = 0
-    this.linesToTravel = linesToTravel
-    this.totalFoundAnimationTime = lineTravelSpeed
-    this.totalSearchingAnimationTime = lineTravelSpeed * linesToTravel
     this.searchingAnimationDone = false
-
-    this.drawSearchingAnimation = this.drawSearchingAnimation.bind(this)
   }
 
   // TODO document
@@ -59,9 +61,7 @@ export default class Cursor {
    * @param {*} isLastLine
    */
   getEasingFunction(isLastLine) {
-    return isLastLine
-      ? this.easingFns.lastLineMvmt
-      : this.easingFns.mainLineMvmt
+    return isLastLine ? this.easingFns.lastLineMvmt : this.easingFns.lineMvmt
   }
 
   // TODO document
@@ -100,7 +100,7 @@ export default class Cursor {
    *
    */
   updateMvmtLine(animator, grid) {
-    /*  Set the start point equal to the end point, then set the end point equal to a random point on the grid. */
+    // Set the start point equal to the end point, then set the end point equal to a random point on the grid.
     this.startPointIndex = this.endPointIndex
     this.endPointIndex = random.rangeFloor(0, grid.size * grid.size - 1)
 
@@ -113,7 +113,6 @@ export default class Cursor {
     if (this.linesTraveled >= this.linesToTravel) {
       this.searchingAnimationDone = true
     }
-    console.log(this.isLastLine)
   }
 
   // TODO add docs
@@ -127,7 +126,6 @@ export default class Cursor {
   updatePositionAlongLine(animator, selectedPoint, grid) {
     const { currentTime, actionTime, canvas } = animator
     const lineMvmtEaseFn = this.getEasingFunction(this.isLastLine)
-
     // Determine how far the cursor is along the line
     const lineCompletePercentage = this.getLineCompletePercentage(
       currentTime,
@@ -136,7 +134,6 @@ export default class Cursor {
 
     if (lineCompletePercentage <= 1) {
       const canvasCenter = [canvas.width / 2, canvas.height / 2]
-
       if (this.searchingAnimationDone) {
         const canvasLowerMiddle = [canvas.width / 2, (canvas.height / 5) * 3]
         const [newX, newY] = this.getPointAlongLine(
@@ -149,7 +146,6 @@ export default class Cursor {
         this.point.y = newY
       } else {
         const { options: gridOptions } = grid
-
         const startPoint =
           this.startPointIndex >= 0
             ? gridOptions[this.startPointIndex].point
@@ -196,7 +192,7 @@ export default class Cursor {
     // Determine the animation completion percentage
     const animDonePerc =
       (totalAnimationTime + currentTime) / totalAnimationTime - 1
-    const mainEasingFn = this.easingFns.main
+    const { lastLineMvmt, settings } = this.easingFns
 
     // Gradually set rotation and distance from orbit center to 0
     if (animDonePerc <= 1) {
@@ -204,19 +200,19 @@ export default class Cursor {
         this.radius = lerp(
           this.initialRadius,
           this.maxRadius,
-          mainEasingFn(animDonePerc)
+          lastLineMvmt(animDonePerc)
         )
       } else {
         this.rotationScalar = lerp(
           this.initialRotationScalar,
           0,
-          mainEasingFn(animDonePerc)
+          settings(animDonePerc)
         )
 
         this.distanceFromOrbitCenter = lerp(
           this.initialDistanceFromOrbitCenter,
           0,
-          mainEasingFn(animDonePerc)
+          settings(animDonePerc)
         )
       }
     }
@@ -233,10 +229,11 @@ export default class Cursor {
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, null, grid)
 
-    context.beginPath()
-    context.fillStyle = this.color
-    context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)
-    context.fill()
+    context.fillStyle = "white"
+    context.font = `${this.radius * 3}px serif`
+    context.textAlign = "center"
+    context.textBaseline = "middle"
+    context.fillText("🤤", this.point.x, this.point.y)
   }
 
   drawFoundAnimation(context, animator, selectedData, selectedImage) {

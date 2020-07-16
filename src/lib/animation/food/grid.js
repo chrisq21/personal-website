@@ -127,7 +127,7 @@ export default class Grid {
       context.fillStyle = color
       context.strokeStyle = color
       context.shadowColor = color
-      // draw grid orb with low opacity over image
+      // Draw grid orb with low opacity over image
       context.globalAlpha = 0.8
       context.beginPath()
       context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
@@ -157,13 +157,13 @@ export default class Grid {
     const newImageX = heightIsSmaller ? imageX - sizeDiff / 2 : imageX
     const newImageY = heightIsSmaller ? imageY : imageY - sizeDiff / 2
 
-    // draw clipping path
+    // Draw clipping path
     context.beginPath()
     context.arc(x, y, this.orbRadius, 0, Math.PI * 2)
     context.clip()
 
     context.imageSmoothingEnabled = true
-    // draw image
+    // Draw image
     context.drawImage(
       image,
       newImageX,
