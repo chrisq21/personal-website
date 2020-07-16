@@ -228,19 +228,16 @@ export default class Cursor {
   drawSearchingAnimation(context, animator, grid) {
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, null, grid)
-
-    context.fillStyle = "white"
-    context.font = `${this.radius * 3}px serif`
-    context.textAlign = "center"
-    context.textBaseline = "middle"
-    context.fillText("🤤", this.point.x, this.point.y)
+    context.beginPath()
+    context.fillStyle = `rgb(246,170,147)`
+    context.arc(this.point.x, this.point.y, this.radius, 0, Math.PI * 2)
+    context.fill()
   }
 
   drawFoundAnimation(context, animator, selectedData, selectedImage) {
     const { point, color, foodData } = selectedData
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, point)
-
     context.beginPath()
     context.fillStyle = color
     context.strokeStyle = color
