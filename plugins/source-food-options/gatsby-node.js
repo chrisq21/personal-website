@@ -28,7 +28,7 @@ const fetchFood = async params => {
   try {
     const res = await fetch(url.href, {
       headers: {
-        Authorization: `Bearer ${process.env.YELP_API_KEY}`,
+        Authorization: `Bearer ${process.env.GATSBY_YELP_API_KEY}`,
       },
     })
     if (res.statusText !== "OK")
@@ -103,7 +103,7 @@ exports.sourceNodes = async ({
 }) => {
   const { createNode } = actions
   const baseParams = {
-    location: "30309", // My zip. Please don't use it to stalk me.
+    location: "30309", // My zip. Please don't stalk me.
     limit: 20,
   }
 
