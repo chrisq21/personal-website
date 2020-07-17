@@ -197,8 +197,8 @@ html {
 }
 * {
   box-sizing: inherit;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Montserrat, sans-serif;
+  color: white;
 }
 *:before {
   box-sizing: inherit;
