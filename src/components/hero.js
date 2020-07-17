@@ -1,9 +1,33 @@
 import React from "react"
 import styled, { keyframes } from "styled-components"
-import { heroHeight } from "../constants/styles"
+import { taglineHeight } from "../constants/styles"
+import { heroTaglines } from "../constants/text"
+
+const generateTaglineKeyFrames = (height, taglines) => {
+  const incrementor = 100 / taglines.length
+  let generatedKeyFrames = ``
+  taglines.map(
+    (_, index) =>
+      (generatedKeyFrames = `${generatedKeyFrames}\n
+    ${index * incrementor}%, ${index * incrementor + incrementor / 2}% {
+      transform: translate(0px, -${height * index}px);
+    }
+  `)
+  )
+
+  generatedKeyFrames = `${generatedKeyFrames}\n
+    100% {
+      transform: translate(0px, 0px);
+    }
+  `
+
+  console.log(generatedKeyFrames)
+
+  return keyframes`${generatedKeyFrames}`
+}
 
 const Wrapper = styled.div`
-  height: ${heroHeight};
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,63 +53,18 @@ const StaticText = styled.span`
   align-items: center;
 `
 
-const TaglineAnimation = keyframes`
-  0% {
-    transform: translate(0px, 0px);
-  }
-
-  10% {
-    transform: translate(0px, 0px);
-  }
-
-  20% {
-    transform: translate(0px, -40px);
-  }
-
-  30% {
-    transform: translate(0px, -40px);
-  }
-
-  40% {
-    transform: translate(0px, -80px);
-  }
-
-  50% {
-    transform: translate(0px, -80px);
-  }
-
-  60% {
-    transform: translate(0px, -120px);
-  }
-
-  70% {
-    transform: translate(0px, -120px);
-  }
-
-  80% {
-    transform: translate(0px, -160px);
-  }
-
-  90% {
-    transform: translate(0px, -160px);
-  }
-
-  100% {
-    transform: translate(0px, 0px);
-  }
-`
-
 const OptionsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-self: start;
   margin-left: 5px;
 
-  animation: 15s cubic-bezier(1, -0.86, 0, 1) ${TaglineAnimation} infinite;
+  animation: 15s cubic-bezier(1, -0.86, 0, 1)
+    ${({ taglineKeyframes }) => taglineKeyframes} infinite;
   animation-delay: 2s;
 `
 
-const Options = styled.span`
+const Option = styled.span`
   height: 40px;
   display: flex;
   align-items: center;
@@ -93,18 +72,19 @@ const Options = styled.span`
   transform-origin: 50% 100%;
 `
 
+const taglines = heroTaglines.map((tagline, index) => (
+  <Option key={index}>{tagline}</Option>
+))
+
 const Hero = () => (
   <Wrapper>
     <Header>Chris Queen</Header>
     <TaglineWrapper>
       <StaticText>To me, software engineering</StaticText>
-      <OptionsWrapper>
-        <Options>is the most powerful tool in the universe.</Options>
-        <Options>is a fruitful occupation.</Options>
-        <Options>is an outlet for creative expression.</Options>
-        <Options>is a bit of an addiction...</Options>
-        <Options>should be accessible to everyone.</Options>
-        <Options></Options>
+      <OptionsWrapper
+        taglineKeyframes={generateTaglineKeyFrames(taglineHeight, taglines)}
+      >
+        {taglines}
       </OptionsWrapper>
     </TaglineWrapper>
   </Wrapper>
