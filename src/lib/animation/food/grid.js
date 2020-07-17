@@ -2,10 +2,6 @@ import random from "canvas-sketch-util/random"
 import { lerp } from "canvas-sketch-util/math"
 import BezierEasing from "bezier-easing"
 
-// TODO document
-/**
- *
- */
 export default class Grid {
   constructor(canvasWidth, canvasHeight, foodArray, foodImages) {
     this.easeFn = BezierEasing(0.7, 0.01, 0, 0.49)
@@ -40,13 +36,6 @@ export default class Grid {
     )
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} canvasWidth
-   * @param {*} canvasHeight
-   * @param {*} foodArray
-   */
   getOptions(canvasWidth, canvasHeight, foodArray, foodImages) {
     const options = []
     const shuffledFoodArray = random.shuffle(foodArray)
@@ -75,12 +64,6 @@ export default class Grid {
     return options
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} cursor
-   * @param {*} animator
-   */
   checkCollisions(cursor, animator) {
     this.options.forEach((optionData, index) => {
       const [x, y] = optionData.point
@@ -104,20 +87,12 @@ export default class Grid {
     })
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} context
-   * @param {*} animator
-   * @param {*} cursor
-   */
   draw(context, animator, cursor, audio) {
     this.drawGrid(context)
     this.checkCollisions(cursor, animator)
     this.drawOrbRipples(context, animator, audio)
   }
 
-  // TODO add images
   drawGrid(context) {
     this.options.forEach(({ color, point, image }) => {
       context.save()
@@ -174,12 +149,6 @@ export default class Grid {
     context.restore()
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} context
-   * @param {*} animator
-   */
   drawOrbRipples(context, animator, audio) {
     this.options.forEach((gridOptionData, index) => {
       const { shouldAnimate, color } = gridOptionData

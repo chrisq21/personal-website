@@ -1,9 +1,5 @@
 import Tone from "tone"
 
-// TODO document
-/**
- *
- */
 export default class Audio {
   constructor() {
     this.gridNotes = [
@@ -30,10 +26,7 @@ export default class Audio {
 
     this.setupAudio()
   }
-  // TODO document
-  /**
-   *
-   */
+
   async setupAudio() {
     // Resume audio context
     if (Tone.context.state !== "running") {
@@ -67,10 +60,7 @@ export default class Audio {
     this.reverb = reverb
     this.synth = synth
   }
-  // TODO document
-  /**
-   *
-   */
+
   playNote(note) {
     if (this.synth) {
       if (Tone.context.state !== "running") {

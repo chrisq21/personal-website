@@ -2,10 +2,6 @@ import random from "canvas-sketch-util/random"
 import { lerp } from "canvas-sketch-util/math"
 import BezierEasing from "bezier-easing"
 
-// TODO document
-/**
- *
- */
 export default class Cursor {
   constructor(canvasWidth, canvasHeight, gridSize) {
     // canvas + grid settings
@@ -55,23 +51,10 @@ export default class Cursor {
     this.searchingAnimationDone = false
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} isLastLine
-   */
   getEasingFunction(isLastLine) {
     return isLastLine ? this.easingFns.lastLineMvmt : this.easingFns.lineMvmt
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} startPoint
-   * @param {*} endPoint
-   * @param {*} lineCompletePercentage
-   * @param {*} lineMvmtEaseFn
-   */
   getPointAlongLine(
     startPoint,
     endPoint,
@@ -85,20 +68,10 @@ export default class Cursor {
     return [x, y]
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} currentTime
-   * @param {*} actionTime
-   */
   getLineCompletePercentage(currentTime, actionTime) {
     return (currentTime - actionTime) / this.lineTravelSpeed
   }
 
-  // TODO add docs
-  /**
-   *
-   */
   updateMvmtLine(animator, grid) {
     // Set the start point equal to the end point, then set the end point equal to a random point on the grid.
     this.startPointIndex = this.endPointIndex
@@ -115,14 +88,6 @@ export default class Cursor {
     }
   }
 
-  // TODO add docs
-  /**
-   *
-   * @param {*} cursor
-   * @param {*} grid
-   * @param {*} animation
-   * @param {*} canvas
-   */
   updatePositionAlongLine(animator, selectedPoint, grid) {
     const { currentTime, actionTime, canvas } = animator
     const lineMvmtEaseFn = this.getEasingFunction(this.isLastLine)
@@ -178,10 +143,6 @@ export default class Cursor {
     }
   }
 
-  // TODO Add docs
-  /**
-   *
-   */
   updateSettings(animator) {
     const { currentTime } = animator
 
@@ -218,13 +179,6 @@ export default class Cursor {
     }
   }
 
-  // TODO document
-  /**
-   *
-   * @param {*} context
-   * @param {*} animator
-   * @param {*} grid
-   */
   drawSearchingAnimation(context, animator, grid) {
     this.updateSettings(animator)
     this.updatePositionAlongLine(animator, null, grid)
