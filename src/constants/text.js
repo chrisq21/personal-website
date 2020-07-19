@@ -1,7 +1,7 @@
 export const heroTaglines = [
   `is the most powerful tool in the universe.`,
-  `is a fruitful occupation.`,
+  `is a fulfilling career.`,
   `is an outlet for creative expression.`,
-  `is a bit of an addiction...`,
+  `brings joy.`,
   `should be accessible to everyone.`,
 ]
