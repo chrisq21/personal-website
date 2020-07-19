@@ -23,13 +23,13 @@ const Header = styled.h1`
   margin-bottom: 0;
 `
 
-const ContactWrapper = styled.div`
+const ContactWrapper = styled.a`
   display: flex;
   align-items: center;
   margin-top: 0.5rem;
 `
 
-const ImageWrapper = styled.div`
+const ImageWrapper = styled.a`
   height: 2rem;
   width: 2rem;
   margin-right: 1rem;
@@ -40,10 +40,10 @@ const Hero = () => (
     <Header>Chris Queen</Header>
     <Tagline />
     <ContactWrapper>
-      <ImageWrapper>
+      <ImageWrapper href="https://github.com/chrisq21">
         <GithubImage />
       </ImageWrapper>
-      <ImageWrapper>
+      <ImageWrapper href="mailto:chrisqueen10@gmail.com">
         <EmailImage />
       </ImageWrapper>
     </ContactWrapper>

@@ -15,7 +15,7 @@ const EmailImage = () => {
     }
   `)
 
-  return <Img fluid={data.placeholderImage.childImageSharp.fluid} />
+  return <Img fluid={data.placeholderImage.childImageSharp.fluid} alt="email" />
 }
 
 export default EmailImage
