@@ -1,5 +1,6 @@
 import { gray } from "./colors"
 
-export const taglineHeight = 40 // in pixels
-
 export const siteBackgroundColor = gray
+
+export const taglineHeight = 40 //px
+export const foodAnimationMaxWidth = 750 //px

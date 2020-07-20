@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useState, useEffect } from "react"
 import FoodAnimation from "../../lib/animation/food"
+import { foodAnimationMaxWidth } from "../../constants/styles"
 import {
   Wrapper,
   CanvasWrapper,
@@ -20,7 +21,7 @@ const FoodSelection = ({ foodOptions }) => {
     const wrapperElement = document.querySelector("#container")
     const wrapperWidth = wrapperElement.offsetWidth
     const wrapperHeight = wrapperElement.offsetHeight
-    setCanvasSize(Math.min(wrapperWidth, wrapperHeight))
+    setCanvasSize(Math.min(wrapperWidth, wrapperHeight, foodAnimationMaxWidth))
   }, [])
 
   /* Once the canvas has proper dimensions, display the grid */

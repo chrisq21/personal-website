@@ -205,7 +205,7 @@ export default class Cursor {
   drawInfo(context, foodData, selectedImage) {
     context.save()
 
-    context.shadowBlur = 30
+    context.shadowBlur = 10
     context.lineWidth = 10
     context.stroke()
 
