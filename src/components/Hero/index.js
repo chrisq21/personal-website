@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useRef } from "react"
 import styled from "styled-components"
 import Tagline from "./Tagline"
 import GithubImage from "../github-image"
@@ -9,12 +9,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-`
-
-const HeaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
 `
 
 const Header = styled.h1`
@@ -35,19 +29,22 @@ const ImageWrapper = styled.a`
   margin-right: 1rem;
 `
 
-const Hero = () => (
-  <Wrapper>
-    <Header>Chris Queen</Header>
-    <Tagline />
-    <ContactWrapper>
-      <ImageWrapper href="https://github.com/chrisq21">
-        <GithubImage />
-      </ImageWrapper>
-      <ImageWrapper href="mailto:chrisqueen10@gmail.com">
-        <EmailImage />
-      </ImageWrapper>
-    </ContactWrapper>
-  </Wrapper>
-)
+const Hero = () => {
+  const heroWrapperRef = useRef(null)
+  return (
+    <Wrapper ref={heroWrapperRef}>
+      <Header>Chris Queen</Header>
+      <Tagline heroWrapperRef={heroWrapperRef} />
+      <ContactWrapper>
+        <ImageWrapper href="https://github.com/chrisq21">
+          <GithubImage />
+        </ImageWrapper>
+        <ImageWrapper href="mailto:chrisqueen10@gmail.com">
+          <EmailImage />
+        </ImageWrapper>
+      </ContactWrapper>
+    </Wrapper>
+  )
+}
 
 export default Hero

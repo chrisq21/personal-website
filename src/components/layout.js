@@ -14,6 +14,7 @@ import styled from "styled-components"
 const LayoutWrapper = styled.div`
   background-image: linear-gradient(to right, rgb(52, 49, 60), rgb(30, 30, 30));
   min-height: 100vh;
+  padding: 0 1.0875rem 1.45rem;
 `
 
 const Layout = ({ children }) => (
