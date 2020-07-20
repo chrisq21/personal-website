@@ -6,8 +6,10 @@ export const TaglineWrapper = styled.div`
   font-size: 20px;
   height: 40px;
   overflow: hidden;
+  margin: 0.5rem 0;
 
   @media screen and (max-width: 768px) {
+    margin: 1rem 0;
     flex-direction: column;
     align-items: start;
     height: auto;
