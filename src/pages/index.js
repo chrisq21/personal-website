@@ -10,15 +10,11 @@ import Tree from "../components/Tree"
 
 const IndexPage = ({ data }) => (
   <Layout>
-    {console.log(data)}
     <SEO title="Home" />
     <Hero />
     <div>
       <Tree />
       <FoodSelection foodOptions={data["lunch"].edges} />
-    </div>
-    <div>
-      <Link to="/tree/">dendrogram</Link>
     </div>
   </Layout>
 )
