@@ -30,7 +30,6 @@ const Body = styled.p`
   margin: 1rem 0;
   color: white;
   width: 75%;
-  font-weight: lighter;
 
   @media screen and (max-width: ${mobileBreakpoint}px) {
     width: 95%;
