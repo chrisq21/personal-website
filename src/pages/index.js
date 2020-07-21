@@ -6,6 +6,7 @@ import SEO from "../components/seo"
 import Hero from "../components/Hero/index.js"
 import { graphql } from "gatsby"
 import FoodSelection from "../components/FoodSelection"
+import Tree from "../components/Tree"
 
 const IndexPage = ({ data }) => (
   <Layout>
@@ -13,6 +14,7 @@ const IndexPage = ({ data }) => (
     <SEO title="Home" />
     <Hero />
     <div>
+      <Tree />
       <FoodSelection foodOptions={data["lunch"].edges} />
     </div>
     <div>
