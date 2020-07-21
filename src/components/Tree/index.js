@@ -7,7 +7,7 @@ import { ANIMATION_SPEED_MS } from "./constants"
 const OuterWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 80vh;
+  min-height: 75vh;
 `
 
 const InnerWrapper = styled.div`

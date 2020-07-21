@@ -1,5 +1,5 @@
 import styled from "styled-components"
-
+import { mobileBreakpoint } from "../../../constants/styles"
 export const TaglineWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -8,7 +8,7 @@ export const TaglineWrapper = styled.div`
   overflow: hidden;
   margin: 0.5rem 0;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${mobileBreakpoint}px) {
     margin: 1rem 0;
     flex-direction: column;
     align-items: start;
@@ -21,7 +21,7 @@ export const StaticText = styled.span`
   display: flex;
   align-items: center;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${mobileBreakpoint}px) {
     height: auto;
   }
 `
@@ -38,7 +38,7 @@ export const OptionsWrapper = styled.div`
   animation-iteration-count: infinite;
   animation-timing-function: cubic-bezier(1, -0.86, 0, 1);
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${mobileBreakpoint}px) {
     animation-delay: 3s;
     transform: translate(0px, 0px);
     animation-name: ${({ mobileKeyFrames }) => mobileKeyFrames};
@@ -55,7 +55,7 @@ export const Option = styled.span`
   font-weight: bold;
   transform-origin: 50% 100%;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${mobileBreakpoint}px) {
     height: auto;
     width: ${({ wrapperWidth }) => wrapperWidth}px;
   }

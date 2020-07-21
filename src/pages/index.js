@@ -1,20 +1,24 @@
 import React from "react"
-import { Link } from "gatsby"
-
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Hero from "../components/Hero/index.js"
 import { graphql } from "gatsby"
+import ShowcaseWrapper from "../components/ShowcaseWrapper"
 import FoodSelection from "../components/FoodSelection"
 import Tree from "../components/Tree"
+import { dendroPhoto, foodSelection } from "../constants/text"
 
 const IndexPage = ({ data }) => (
   <Layout>
     <SEO title="Home" />
     <Hero />
     <div>
-      <Tree />
-      <FoodSelection foodOptions={data["lunch"].edges} />
+      <ShowcaseWrapper header={dendroPhoto.header} body={dendroPhoto.body}>
+        <Tree />
+      </ShowcaseWrapper>
+      <ShowcaseWrapper header={foodSelection.header} body={foodSelection.body}>
+        <FoodSelection foodOptions={data["lunch"].edges} />
+      </ShowcaseWrapper>
     </div>
   </Layout>
 )
