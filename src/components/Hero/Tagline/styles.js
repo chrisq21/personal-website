@@ -34,7 +34,6 @@ export const OptionsWrapper = styled.div`
 
   animation-name: ${({ keyFrames }) => keyFrames};
   animation-duration: 15s;
-  animation-delay: 1s;
   animation-iteration-count: infinite;
   animation-timing-function: cubic-bezier(1, -0.86, 0, 1);
 

@@ -37,7 +37,7 @@ const Body = styled.p`
 `
 
 const ChildrenWrapper = styled.div`
-  margin: 5rem 0;
+  margin: 4rem 0;
 `
 
 const ShowcaseWrapper = ({ header, body, children }) => {
