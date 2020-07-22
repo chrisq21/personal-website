@@ -6,13 +6,22 @@ import { graphql } from "gatsby"
 import ShowcaseWrapper from "../components/ShowcaseWrapper"
 import FoodSelection from "../components/FoodSelection"
 import Tree from "../components/Tree"
-import { dendroPhoto, foodSelection } from "../constants/text"
+import { mindfulness, dendroPhoto, foodSelection } from "../constants/text"
+import MindfulnessImage from "../components/mindfulness-image"
 
 const IndexPage = ({ data }) => (
   <Layout>
     <SEO title="Home" />
     <Hero />
     <div>
+      <ShowcaseWrapper header={mindfulness.header} body={mindfulness.body}>
+        <a
+          href="https://apps.apple.com/us/app/mindful-life-project/id1033749749"
+          target="_blank"
+        >
+          <MindfulnessImage style={{ margin: "0 auto", maxWidth: "300px" }} />
+        </a>
+      </ShowcaseWrapper>
       <ShowcaseWrapper header={dendroPhoto.header} body={dendroPhoto.body}>
         <Tree />
       </ShowcaseWrapper>

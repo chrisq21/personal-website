@@ -1,5 +1,6 @@
 import React from "react"
 
+// Hero
 export const heroTaglines = [
   `is the most powerful tool in the universe.`,
   `is a fulfilling career.`,
@@ -7,6 +8,19 @@ export const heroTaglines = [
   `brings joy.`,
   `should be accessible to everyone.`,
 ]
+
+// Showcase
+export const mindfulness = {
+  header: "Mindfulness React Native App",
+  body: (
+    <span>
+      I had the pleasure of building the official React Native app for the{" "}
+      <a href="http://mindfullifeproject.org/">Mindful Life Project</a> based in
+      Richmond, California. It is currently on the Apple App Store and Google
+      Play Store.
+    </span>
+  ),
+}
 
 export const dendroPhoto = {
   header: "Dendro-Photo",
@@ -23,6 +37,6 @@ export const dendroPhoto = {
 }
 
 export const foodSelection = {
-  header: "Food Picker",
-  body: `This side-project was born out of my interest in experimenting with the Canvas API, along with asking my partner "what should we have for lunch?" everyday.`,
+  header: "Food Picker ",
+  body: `This side-project was born out of my interest in experimenting with the Canvas API, along with asking my partner "what should we have for lunch?" everyday. ⚠️ Includes Audio`,
 }

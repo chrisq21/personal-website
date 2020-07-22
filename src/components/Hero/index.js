@@ -1,5 +1,5 @@
 import React, { useRef } from "react"
-import styled from "styled-components"
+import styled, { keyframes } from "styled-components"
 import Tagline from "./Tagline"
 import GithubImage from "../github-image"
 import EmailImage from "../email-image"
@@ -17,7 +17,7 @@ const Header = styled.h1`
   margin-bottom: 0;
 `
 
-const ContactWrapper = styled.a`
+const ContactWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-top: 0.5rem;
