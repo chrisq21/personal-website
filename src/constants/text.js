@@ -2,9 +2,9 @@ import React from "react"
 
 // Hero
 export const heroTaglines = [
+  `is an outlet for creative expression.`,
   `is the most powerful tool in the universe.`,
   `is a fulfilling career.`,
-  `is an outlet for creative expression.`,
   `brings joy.`,
   `should be accessible to everyone.`,
 ]
