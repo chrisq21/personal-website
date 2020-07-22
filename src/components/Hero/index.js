@@ -17,10 +17,23 @@ const Header = styled.h1`
   margin-bottom: 0;
 `
 
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+`
+
 const ContactWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-top: 0.5rem;
+  opacity: 0;
+  animation: 1s ease-out ${fadeIn} forwards;
+  animation-delay: 500ms;
 `
 
 const ImageWrapper = styled.a`
