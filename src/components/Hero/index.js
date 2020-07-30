@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components"
 import Tagline from "./Tagline"
 import GithubImage from "../github-image"
 import EmailImage from "../email-image"
+import { fadeIn } from "../../constants/styles"
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -15,16 +16,6 @@ const Header = styled.h1`
   font-size: 4rem;
   font-weight: bold;
   margin-bottom: 0;
-`
-
-const fadeIn = keyframes`
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
 `
 
 const ContactWrapper = styled.div`

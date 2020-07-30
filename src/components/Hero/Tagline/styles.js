@@ -1,5 +1,6 @@
 import styled from "styled-components"
-import { mobileBreakpoint } from "../../../constants/styles"
+import { mobileBreakpoint, fadeIn } from "../../../constants/styles"
+
 export const TaglineWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -7,6 +8,9 @@ export const TaglineWrapper = styled.div`
   height: 40px;
   overflow: hidden;
   margin: 0.5rem 0;
+  opacity: 0;
+  animation: 1s ease-out ${fadeIn} forwards;
+  animation-delay: 500ms;
 
   @media screen and (max-width: ${mobileBreakpoint}px) {
     margin: 1rem 0;
@@ -38,7 +42,7 @@ export const OptionsWrapper = styled.div`
   animation-timing-function: cubic-bezier(1, -0.86, 0, 1);
 
   @media screen and (max-width: ${mobileBreakpoint}px) {
-    animation-delay: 3s;
+    animation-delay: 500ms;
     transform: translate(0px, 0px);
     animation-name: ${({ mobileKeyFrames }) => mobileKeyFrames};
     flex-direction: row;
