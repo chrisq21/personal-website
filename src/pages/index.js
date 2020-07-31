@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useLayoutEffect } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Hero from "../components/Hero/index.js"
@@ -9,28 +9,49 @@ import Tree from "../components/Tree"
 import { mindfulness, dendroPhoto, foodSelection } from "../constants/text"
 import MindfulnessImage from "../components/mindfulness-image"
 
-const IndexPage = ({ data }) => (
-  <Layout>
-    <SEO title="Home" />
-    <Hero />
-    <div>
-      <ShowcaseWrapper header={mindfulness.header} body={mindfulness.body}>
-        <a
-          href="https://apps.apple.com/us/app/mindful-life-project/id1033749749"
-          target="_blank"
+const IndexPage = ({ data }) => {
+  useLayoutEffect(() => {
+    // Add observer for showcase dividers. Animate width when shown
+    const dividers = document.querySelectorAll(".divider")
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.intersectionRatio > 0) {
+          entry.target.style.width = "100%"
+          observer.unobserve(entry.target)
+        }
+      })
+    })
+    dividers.forEach(image => {
+      observer.observe(image)
+    })
+  }, [])
+
+  return (
+    <Layout>
+      <SEO title="Home" />
+      <Hero />
+      <div>
+        <ShowcaseWrapper header={mindfulness.header} body={mindfulness.body}>
+          <a
+            href="https://apps.apple.com/us/app/mindful-life-project/id1033749749"
+            target="_blank"
+          >
+            <MindfulnessImage style={{ margin: "0 auto", maxWidth: "300px" }} />
+          </a>
+        </ShowcaseWrapper>
+        <ShowcaseWrapper header={dendroPhoto.header} body={dendroPhoto.body}>
+          <Tree />
+        </ShowcaseWrapper>
+        <ShowcaseWrapper
+          header={foodSelection.header}
+          body={foodSelection.body}
         >
-          <MindfulnessImage style={{ margin: "0 auto", maxWidth: "300px" }} />
-        </a>
-      </ShowcaseWrapper>
-      <ShowcaseWrapper header={dendroPhoto.header} body={dendroPhoto.body}>
-        <Tree />
-      </ShowcaseWrapper>
-      <ShowcaseWrapper header={foodSelection.header} body={foodSelection.body}>
-        <FoodSelection foodOptions={data["lunch"].edges} />
-      </ShowcaseWrapper>
-    </div>
-  </Layout>
-)
+          <FoodSelection foodOptions={data["lunch"].edges} />
+        </ShowcaseWrapper>
+      </div>
+    </Layout>
+  )
+}
 
 export default IndexPage
 

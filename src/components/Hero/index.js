@@ -24,7 +24,7 @@ const ContactWrapper = styled.div`
   margin-top: 0.5rem;
   opacity: 0;
   animation: 1s ease-out ${fadeIn} forwards;
-  animation-delay: 500ms;
+  animation-delay: 300ms;
 `
 
 const ImageWrapper = styled.a`

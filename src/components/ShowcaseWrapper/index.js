@@ -10,20 +10,11 @@ const Header = styled.h2`
   margin-bottom: 0.5rem;
 `
 
-const widthKeyframes = keyframes`
-  0% {
-    width: 0px;
-  }
-  100% {
-    width: 100%;
-  }
-`
-
 const Divider = styled.div`
   height: 1px;
   background: white;
   width: 0px;
-  animation: 300ms ease-out ${widthKeyframes} forwards;
+  transition: width 500ms ease-out;
 `
 
 const Body = styled.p`
@@ -44,7 +35,7 @@ const ShowcaseWrapper = ({ header, body, children }) => {
   return (
     <Wrapper>
       <Header>{header}</Header>
-      <Divider />
+      <Divider className="divider" />
       <Body>{body}</Body>
       <ChildrenWrapper>{children}</ChildrenWrapper>
     </Wrapper>
