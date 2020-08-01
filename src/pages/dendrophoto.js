@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
-import { fetchToken, fetchImages } from "../lib/services"
+import Tree from "../components/Tree"
+import { fetchToken, fetchImages } from "../lib/services/dendrophoto"
 
 const DendroPhotoPage = () => {
-  const [images, setImages] = useState(null)
+  const [images, setImages] = useState([])
   useEffect(() => {
     const getImages = async code => {
       const accessToken = await fetchToken(code)
       const imageData = await fetchImages(accessToken)
-      setImageData(imageData)
+      setImages(imageData)
     }
 
     const searchParams = window?.location?.search
@@ -29,7 +30,8 @@ const DendroPhotoPage = () => {
     <Layout>
       <SEO title="DendroPhoto" />
       <h1>Dendro-Photo</h1>
-      <button onClick={requestCode}>Get Photo Data</button>
+      {images.length === 0 && <button onClick={requestCode}>DO IT!</button>}
+      {images.length > 0 && <Tree images={images} />}
     </Layout>
   )
 }

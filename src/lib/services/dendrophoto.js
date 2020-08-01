@@ -1,3 +1,4 @@
+// TODO error handling
 export const fetchImages = async accessToken => {
   const imageDataURL = `https://graph.instagram.com/me/media?fields=media_url,media_type,id,timestamp&access_token`
   const res = await fetch(`${imageDataURL}=${accessToken}`)
@@ -5,6 +6,7 @@ export const fetchImages = async accessToken => {
   return imageData.data
 }
 
+// TODO error handling
 export const fetchToken = async code => {
   const tokenURL = `https://api.instagram.com/oauth/access_token`
   const body = `client_id=${process.env.GATSBY_INSTAGRAM_CLIENT_ID}&client_secret=${process.env.GATSBY_INSTAGRAM_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=${process.env.GATSBY_INSTAGRAM_REDIRECT_URI}&code=${code}`

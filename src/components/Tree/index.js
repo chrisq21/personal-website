@@ -51,8 +51,8 @@ const TreeWrapper = styled.div`
   height: 100%;
 `
 
-const Tree = () => {
-  const [images, setImages] = useState(null)
+const Tree = ({ fetchedImages }) => {
+  const [images, setImages] = useState(fetchedImages)
   const [imagesLoadedCounter, setImagesLoadedCounter] = useState(0)
   const [shouldShowTree, setShouldShowTree] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(-1)
@@ -90,7 +90,10 @@ const Tree = () => {
   }
 
   const onClickLoadTree = () => {
-    if (!images) fetchImages()
+    if (images) {
+    } else {
+      fetchImages()
+    }
   }
 
   const onImageLoad = () => {
