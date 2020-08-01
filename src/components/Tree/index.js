@@ -90,8 +90,7 @@ const Tree = ({ fetchedImages }) => {
   }
 
   const onClickLoadTree = () => {
-    if (images) {
-    } else {
+    if (!images || (images && images.length === 0)) {
       fetchImages()
     }
   }

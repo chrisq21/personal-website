@@ -1,7 +1,7 @@
 // TODO error handling
-export const fetchImages = async accessToken => {
-  const imageDataURL = `https://graph.instagram.com/me/media?fields=media_url,media_type,id,timestamp&access_token`
-  const res = await fetch(`${imageDataURL}=${accessToken}`)
+export const fetchImages = async tokenData => {
+  const imageDataURL = `https://graph.instagram.com/${tokenData.user_id}/media?fields=media_url,media_type,id,timestamp&access_token`
+  const res = await fetch(`${imageDataURL}=${tokenData.access_token}`)
   const imageData = await res.json()
   return imageData.data
 }
@@ -17,6 +17,6 @@ export const fetchToken = async code => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   })
-  const data = await res.json()
-  return data.access_token
+  const tokenData = await res.json()
+  return tokenData
 }
