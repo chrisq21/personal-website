@@ -10,7 +10,7 @@ export const TaglineWrapper = styled.div`
   margin: 0.5rem 0;
   opacity: 0;
   animation: 1s ease-out ${fadeIn} forwards;
-  animation-delay: 300ms;
+  animation-delay: 800ms;
 
   @media screen and (max-width: ${mobileBreakpoint}px) {
     margin: 1rem 0;

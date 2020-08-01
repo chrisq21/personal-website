@@ -13,9 +13,12 @@ const Wrapper = styled.div`
 `
 
 const Header = styled.h1`
+  opacity: 0;
   font-size: 4rem;
   font-weight: bold;
   margin-bottom: 0;
+  animation: 1s ease-out ${fadeIn} forwards;
+  animation-delay: 300ms;
 `
 
 const ContactWrapper = styled.div`
@@ -24,7 +27,7 @@ const ContactWrapper = styled.div`
   margin-top: 0.5rem;
   opacity: 0;
   animation: 1s ease-out ${fadeIn} forwards;
-  animation-delay: 300ms;
+  animation-delay: 800ms;
 `
 
 const ImageWrapper = styled.a`
