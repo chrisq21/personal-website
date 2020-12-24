@@ -86,7 +86,7 @@ const monthMap = [
 const addPeaches = debounce(
   (numPeaches, canvasWrapper, Bodies, World, physicsEngine) => {
     const width = canvasWrapper.current.offsetWidth
-    const radius = 30
+    const radius = 25
     let peaches = []
     let offset = radius * 2
     const count = numPeaches
@@ -139,9 +139,6 @@ const PeachesPage = () => {
         }
       })
     }
-    document.onclick = () => {
-      increment()
-    }
     document.ontouchend = () => {
       increment()
     }
@@ -155,7 +152,6 @@ const PeachesPage = () => {
       }
     }
     return () => {
-      document.onclick = null
       document.ontouchend = null
       document.onkeydown = null
     }
@@ -240,7 +236,7 @@ const PeachesPage = () => {
           </a>
           )
         </Description>
-        <Description>tap the screen, or use arrow keys</Description>
+        <Description>mobile: tap, desktop: arrow keys</Description>
       </PageWrapper>
     </div>
   )
