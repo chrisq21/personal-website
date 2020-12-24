@@ -5,14 +5,15 @@ import orchardImg from "../assets/orchard.jpg"
 import peachImg from "../assets/peach.png"
 import { Engine, Render, Bodies, World } from "matter-js"
 import debounce from "lodash/debounce"
-
+import "../components/layout.css"
 const PageWrapper = styled.div`
+  padding-top: 10px;
   width: 100vw;
   height: 100vh;
   background: blue;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(${orchardImg});
   background-size: cover;
   background-position: bottom;
@@ -50,7 +51,7 @@ const CanvasWrapper = styled.div`
 const Description = styled.p`
   color: white;
   text-align: center;
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin: 0;
   font-family: monospace;
 
