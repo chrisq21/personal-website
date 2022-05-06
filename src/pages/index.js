@@ -39,9 +39,9 @@ const IndexPage = ({ data }) => {
             <MindfulnessImage style={{ margin: "0 auto", maxWidth: "300px" }} />
           </a>
         </ShowcaseWrapper>
-        <ShowcaseWrapper header={dendroPhoto.header} body={dendroPhoto.body}>
+        {/* <ShowcaseWrapper header={dendroPhoto.header} body={dendroPhoto.body}>
           <Tree />
-        </ShowcaseWrapper>
+        </ShowcaseWrapper> */}
         <ShowcaseWrapper
           header={foodSelection.header}
           body={foodSelection.body}
